@@ -1,0 +1,36 @@
+name: Build
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '9.0.x'
+
+    - name: Restore dependencies
+      run: dotnet restore BrowserPickerPro.sln
+
+    - name: Build
+      run: dotnet build BrowserPickerPro.sln --configuration Release --no-restore
+
+    - name: Test
+      run: dotnet test BrowserPickerPro.sln --configuration Release --no-build --verbosity normal --collect:"XPlat Code Coverage"
+
+    - name: Upload coverage
+      uses: codecov/codecov-action@v4
+      if: always()
+      with:
+        token: ${{ secrets.CODECOV_TOKEN }}
+        files: '**/coverage.cobertura.xml'
+        fail_ci_if_error: false

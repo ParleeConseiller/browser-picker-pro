@@ -1,0 +1,86 @@
+<Page x:Class="BrowserPickerPro.UI.Views.AppearanceView"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+      xmlns:vm="clr-namespace:BrowserPickerPro.UI.ViewModels"
+      mc:Ignorable="d" Background="Transparent"
+      d:DataContext="{d:DesignInstance vm:AppearanceViewModel}">
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <StackPanel Margin="32,24" MaxWidth="680" HorizontalAlignment="Left">
+
+            <TextBlock Text="Appearance" Style="{StaticResource TextStyle.TitleLarge}"/>
+            <TextBlock Text="Customize the look and feel of Browser Picker Pro."
+                       Style="{StaticResource TextStyle.BodySecondary}" Margin="0,4,0,24"/>
+
+            <!-- Theme -->
+            <Border Style="{StaticResource Card.Default}" Margin="0,0,0,16">
+                <StackPanel>
+                    <TextBlock Text="Color Theme" Style="{StaticResource TextStyle.Body}" FontWeight="SemiBold" Margin="0,0,0,12"/>
+                    <StackPanel Orientation="Horizontal">
+                        <RadioButton Content="System" GroupName="Theme" Margin="0,0,16,0"
+                                     IsChecked="{Binding SelectedTheme, Converter={StaticResource EnumToBool}, ConverterParameter=System}"
+                                     FontFamily="{StaticResource Font.Primary}" Cursor="Hand"/>
+                        <RadioButton Content="Light" GroupName="Theme" Margin="0,0,16,0"
+                                     IsChecked="{Binding SelectedTheme, Converter={StaticResource EnumToBool}, ConverterParameter=Light}"
+                                     FontFamily="{StaticResource Font.Primary}" Cursor="Hand"/>
+                        <RadioButton Content="Dark" GroupName="Theme"
+                                     IsChecked="{Binding SelectedTheme, Converter={StaticResource EnumToBool}, ConverterParameter=Dark}"
+                                     FontFamily="{StaticResource Font.Primary}" Cursor="Hand"/>
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+
+            <!-- Effects -->
+            <Border Style="{StaticResource Card.Default}" Margin="0,0,0,16">
+                <StackPanel>
+                    <TextBlock Text="Window Effects" Style="{StaticResource TextStyle.Body}" FontWeight="SemiBold" Margin="0,0,0,12"/>
+                    <Grid Margin="0,0,0,12">
+                        <StackPanel>
+                            <TextBlock Text="Mica background effect" Style="{StaticResource TextStyle.Body}"/>
+                            <TextBlock Text="Applies a frosted glass effect using the Windows 11 Mica material."
+                                       Style="{StaticResource TextStyle.Caption}" Margin="0,2,0,0"/>
+                        </StackPanel>
+                        <ToggleButton HorizontalAlignment="Right" Style="{StaticResource ToggleButton.Switch}"
+                                      IsChecked="{Binding EnableMicaEffect}" VerticalAlignment="Top"/>
+                    </Grid>
+                    <Grid>
+                        <StackPanel>
+                            <TextBlock Text="Smooth animations" Style="{StaticResource TextStyle.Body}"/>
+                            <TextBlock Text="Enable hover and transition animations throughout the app."
+                                       Style="{StaticResource TextStyle.Caption}" Margin="0,2,0,0"/>
+                        </StackPanel>
+                        <ToggleButton HorizontalAlignment="Right" Style="{StaticResource ToggleButton.Switch}"
+                                      IsChecked="{Binding EnableAnimations}" VerticalAlignment="Top"/>
+                    </Grid>
+                </StackPanel>
+            </Border>
+
+            <!-- Picker Settings -->
+            <Border Style="{StaticResource Card.Default}" Margin="0,0,0,24">
+                <StackPanel>
+                    <TextBlock Text="Browser Picker" Style="{StaticResource TextStyle.Body}" FontWeight="SemiBold" Margin="0,0,0,12"/>
+                    <Grid Margin="0,0,0,12">
+                        <TextBlock Text="Show browser version" Style="{StaticResource TextStyle.Body}" VerticalAlignment="Center"/>
+                        <ToggleButton HorizontalAlignment="Right" Style="{StaticResource ToggleButton.Switch}"
+                                      IsChecked="{Binding ShowBrowserVersion}" VerticalAlignment="Center"/>
+                    </Grid>
+                    <Grid>
+                        <TextBlock Text="Show recent usage indicators" Style="{StaticResource TextStyle.Body}" VerticalAlignment="Center"/>
+                        <ToggleButton HorizontalAlignment="Right" Style="{StaticResource ToggleButton.Switch}"
+                                      IsChecked="{Binding ShowRecentUsage}" VerticalAlignment="Center"/>
+                    </Grid>
+                </StackPanel>
+            </Border>
+
+            <Grid>
+                <TextBlock Text="{Binding StatusMessage}" Style="{StaticResource TextStyle.BodySecondary}"
+                           Foreground="{DynamicResource Brush.Success}" VerticalAlignment="Center"
+                           Visibility="{Binding StatusMessage, Converter={StaticResource StringToVisibility}}"/>
+                <Button Content="Save Appearance" Style="{StaticResource Button.Primary}"
+                        HorizontalAlignment="Right" Command="{Binding SaveCommand}"/>
+            </Grid>
+        </StackPanel>
+    </ScrollViewer>
+</Page>

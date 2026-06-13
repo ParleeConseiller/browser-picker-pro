@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Browser Picker Pro Installer
+    Created by Parlee Conseiller, Inc.
+    Built with WiX Toolset v4
+-->
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
+    <Package Name="Browser Picker Pro"
+             Manufacturer="Parlee Conseiller, Inc."
+             Version="1.0.0"
+             UpgradeCode="B4A7C3D1-E9F2-4A56-8B3C-D1E2F3A4B5C6"
+             Scope="perUser">
+
+        <MajorUpgrade DowngradeErrorMessage="A newer version of Browser Picker Pro is already installed." />
+
+        <MediaTemplate EmbedCab="yes" />
+
+        <Feature Id="MainFeature" Title="Browser Picker Pro" Level="1">
+            <ComponentGroupRef Id="MainComponents" />
+            <ComponentGroupRef Id="RegistryComponents" />
+        </Feature>
+
+        <UIRef Id="WixUI_Minimal" />
+
+        <Property Id="WIXUI_INSTALLDIR" Value="INSTALLFOLDER" />
+    </Package>
+
+    <Fragment>
+        <Directory Id="TARGETDIR" Name="SourceDir">
+            <Directory Id="LocalAppDataFolder">
+                <Directory Id="ProgramsFolder" Name="Programs">
+                    <Directory Id="INSTALLFOLDER" Name="Browser Picker Pro"/>
+                </Directory>
+            </Directory>
+            <Directory Id="DesktopFolder"/>
+            <Directory Id="ProgramMenuFolder">
+                <Directory Id="ApplicationProgramsFolder" Name="Browser Picker Pro"/>
+            </Directory>
+        </Directory>
+    </Fragment>
+
+    <Fragment>
+        <ComponentGroup Id="MainComponents" Directory="INSTALLFOLDER">
+            <Component Id="MainExecutable" Guid="A1B2C3D4-E5F6-4789-ABCD-EF1234567890">
+                <File Id="BrowserPickerProExe"
+                      Source="..\..\publish\win-x64\BrowserPickerPro.exe"
+                      Name="BrowserPickerPro.exe"
+                      KeyPath="yes"/>
+                <Shortcut Id="DesktopShortcut"
+                          Directory="DesktopFolder"
+                          Name="Browser Picker Pro"
+                          Description="Choose the right browser every time."
+                          WorkingDirectory="INSTALLFOLDER"
+                          Advertise="no"/>
+                <Shortcut Id="StartMenuShortcut"
+                          Directory="ApplicationProgramsFolder"
+                          Name="Browser Picker Pro"
+                          Description="Choose the right browser every time."
+                          WorkingDirectory="INSTALLFOLDER"
+                          Advertise="no"/>
+                <RemoveFolder Id="CleanupStartMenu" Directory="ApplicationProgramsFolder" On="uninstall"/>
+                <RegistryValue Root="HKCU" Key="Software\BrowserPickerPro\Installed"
+                               Name="Version" Type="string" Value="1.0.0" KeyPath="no"/>
+            </Component>
+        </ComponentGroup>
+
+        <ComponentGroup Id="RegistryComponents" Directory="INSTALLFOLDER">
+            <Component Id="RegistryRegistration" Guid="B2C3D4E5-F6A7-4890-BCDE-F12345678901">
+                <RegistryKey Root="HKCU" Key="SOFTWARE\Classes\BrowserPickerProHTML">
+                    <RegistryValue Name="(Default)" Type="string" Value="Browser Picker Pro"/>
+                    <RegistryValue Name="FriendlyTypeName" Type="string" Value="Browser Picker Pro"/>
+                </RegistryKey>
+                <RegistryKey Root="HKCU" Key="SOFTWARE\Classes\BrowserPickerProHTML\DefaultIcon">
+                    <RegistryValue Name="(Default)" Type="string" Value="[INSTALLFOLDER]BrowserPickerPro.exe,0"/>
+                </RegistryKey>
+                <RegistryKey Root="HKCU" Key="SOFTWARE\Classes\BrowserPickerProHTML\shell\open\command">
+                    <RegistryValue Name="(Default)" Type="string" Value='"[INSTALLFOLDER]BrowserPickerPro.exe" "%1"'/>
+                </RegistryKey>
+                <RegistryKey Root="HKCU" Key="SOFTWARE\BrowserPickerPro\Capabilities">
+                    <RegistryValue Name="ApplicationDescription" Type="string" Value="Choose the right browser every time."/>
+                    <RegistryValue Name="ApplicationName" Type="string" Value="Browser Picker Pro"/>
+                </RegistryKey>
+                <RegistryKey Root="HKCU" Key="SOFTWARE\BrowserPickerPro\Capabilities\URLAssociations">
+                    <RegistryValue Name="http"  Type="string" Value="BrowserPickerProHTML"/>
+                    <RegistryValue Name="https" Type="string" Value="BrowserPickerProHTML"/>
+                    <RegistryValue Name="ftp"   Type="string" Value="BrowserPickerProHTML"/>
+                </RegistryKey>
+                <RegistryKey Root="HKCU" Key="SOFTWARE\BrowserPickerPro\Capabilities\FileAssociations">
+                    <RegistryValue Name=".html" Type="string" Value="BrowserPickerProHTML"/>
+                    <RegistryValue Name=".htm"  Type="string" Value="BrowserPickerProHTML"/>
+                    <RegistryValue Name=".url"  Type="string" Value="BrowserPickerProHTML"/>
+                </RegistryKey>
+                <RegistryValue Root="HKCU" Key="SOFTWARE\RegisteredApplications"
+                               Name="BrowserPickerPro" Type="string"
+                               Value="SOFTWARE\BrowserPickerPro\Capabilities"/>
+            </Component>
+        </ComponentGroup>
+    </Fragment>
+</Wix>

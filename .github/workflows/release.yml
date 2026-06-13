@@ -1,0 +1,68 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: windows-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '9.0.x'
+
+    - name: Get version from tag
+      id: get_version
+      shell: bash
+      run: echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
+
+    - name: Restore
+      run: dotnet restore BrowserPickerPro.sln
+
+    - name: Build Release
+      run: dotnet build BrowserPickerPro.sln --configuration Release --no-restore
+
+    - name: Test
+      run: dotnet test BrowserPickerPro.sln --configuration Release --no-build
+
+    - name: Publish Single-File
+      run: >
+        dotnet publish src/BrowserPickerPro.UI/BrowserPickerPro.UI.csproj
+        --configuration Release
+        --runtime win-x64
+        --self-contained true
+        -p:PublishSingleFile=true
+        -p:Version=${{ steps.get_version.outputs.VERSION }}
+        --output ./publish/win-x64
+
+    - name: Zip artifact
+      run: Compress-Archive -Path ./publish/win-x64/* -DestinationPath ./publish/BrowserPickerPro-${{ steps.get_version.outputs.VERSION }}-win-x64.zip
+      shell: pwsh
+
+    - name: Create GitHub Release
+      uses: softprops/action-gh-release@v2
+      with:
+        name: Browser Picker Pro v${{ steps.get_version.outputs.VERSION }}
+        body: |
+          ## Browser Picker Pro v${{ steps.get_version.outputs.VERSION }}
+
+          Choose the right browser every time.
+
+          ### Installation
+          1. Download the ZIP below
+          2. Extract and run `BrowserPickerPro.exe`
+          3. Follow the Windows Setup wizard to register as default browser
+
+          **Created by Parlee Conseiller, Inc.**
+        files: ./publish/BrowserPickerPro-${{ steps.get_version.outputs.VERSION }}-win-x64.zip
+        draft: false
+        prerelease: false

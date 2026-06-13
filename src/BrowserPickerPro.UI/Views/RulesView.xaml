@@ -1,0 +1,200 @@
+<Page x:Class="BrowserPickerPro.UI.Views.RulesView"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+      xmlns:vm="clr-namespace:BrowserPickerPro.UI.ViewModels"
+      mc:Ignorable="d" Background="Transparent"
+      d:DataContext="{d:DesignInstance vm:RulesViewModel}">
+
+    <Grid Margin="32,24">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Header -->
+        <Grid Grid.Row="0" Margin="0,0,0,20">
+            <StackPanel>
+                <TextBlock Text="Rules Engine" Style="{StaticResource TextStyle.TitleLarge}"/>
+                <TextBlock Text="Route URLs to specific browsers based on domain, wildcard, or regex patterns."
+                           Style="{StaticResource TextStyle.BodySecondary}" Margin="0,4,0,0"/>
+            </StackPanel>
+            <Button Style="{StaticResource Button.Primary}" HorizontalAlignment="Right"
+                    VerticalAlignment="Top" Command="{Binding AddRuleCommand}">
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="+" FontSize="14" VerticalAlignment="Center" Margin="0,0,6,0" FontWeight="Bold"/>
+                    <TextBlock Text="Add Rule" VerticalAlignment="Center"/>
+                </StackPanel>
+            </Button>
+        </Grid>
+
+        <!-- Content -->
+        <Grid Grid.Row="1">
+            <!-- Rule Editor Panel -->
+            <Border Visibility="{Binding IsEditing, Converter={StaticResource BoolToVisibility}}"
+                    Background="{DynamicResource Brush.Surface}" CornerRadius="12"
+                    BorderBrush="{DynamicResource Brush.Border}" BorderThickness="1" Padding="24">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <TextBlock Grid.Row="0" Text="Edit Rule" Style="{StaticResource TextStyle.Subtitle}" Margin="0,0,0,20"/>
+
+                    <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+                        <StackPanel DataContext="{Binding EditingRule}">
+                            <!-- Name -->
+                            <StackPanel>
+                                <TextBlock Text="Rule Name" Style="{StaticResource TextStyle.Caption}" Margin="0,0,0,6"/>
+                                <TextBox Style="{StaticResource TextBox.Modern}" Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}"/>
+                            </StackPanel>
+                            <!-- Pattern -->
+                            <StackPanel>
+                                <TextBlock Text="Pattern" Style="{StaticResource TextStyle.Caption}" Margin="0,0,0,6"/>
+                                <TextBox Style="{StaticResource TextBox.Modern}" Text="{Binding Pattern, UpdateSourceTrigger=PropertyChanged}"
+                                         FontFamily="{StaticResource Font.Mono}"/>
+                            </StackPanel>
+                            <!-- Type and Action -->
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="16"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <StackPanel Grid.Column="0">
+                                    <TextBlock Text="Match Type" Style="{StaticResource TextStyle.Caption}" Margin="0,0,0,6"/>
+                                    <ComboBox Style="{StaticResource ComboBox.Modern}"
+                                              ItemsSource="{Binding DataContext.RuleTypes, RelativeSource={RelativeSource AncestorType=Page}}"
+                                              SelectedItem="{Binding RuleType}"/>
+                                </StackPanel>
+                                <StackPanel Grid.Column="2">
+                                    <TextBlock Text="Action" Style="{StaticResource TextStyle.Caption}" Margin="0,0,0,6"/>
+                                    <ComboBox Style="{StaticResource ComboBox.Modern}"
+                                              ItemsSource="{Binding DataContext.RuleActions, RelativeSource={RelativeSource AncestorType=Page}}"
+                                              SelectedItem="{Binding Action}"/>
+                                </StackPanel>
+                            </Grid>
+                            <!-- Browser -->
+                            <StackPanel>
+                                <TextBlock Text="Target Browser" Style="{StaticResource TextStyle.Caption}" Margin="0,0,0,6"/>
+                                <ComboBox Style="{StaticResource ComboBox.Modern}"
+                                          ItemsSource="{Binding AvailableBrowsers}"
+                                          SelectedValuePath="Id"
+                                          SelectedValue="{Binding TargetBrowserId}"
+                                          DisplayMemberPath="DisplayName"/>
+                            </StackPanel>
+                            <!-- Priority -->
+                            <StackPanel>
+                                <TextBlock Text="Priority (lower = higher priority)" Style="{StaticResource TextStyle.Caption}" Margin="0,0,0,6"/>
+                                <TextBox Style="{StaticResource TextBox.Modern}" Text="{Binding Priority, UpdateSourceTrigger=PropertyChanged}"/>
+                            </StackPanel>
+                        </StackPanel>
+                    </ScrollViewer>
+
+                    <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,16,0,0">
+                        <Button Content="Cancel" Style="{StaticResource Button.Secondary}"
+                                Command="{Binding CancelEditCommand}" Margin="0,0,8,0"/>
+                        <Button Content="Save Rule" Style="{StaticResource Button.Primary}"
+                                Command="{Binding SaveRuleCommand}"/>
+                    </StackPanel>
+                </Grid>
+            </Border>
+
+            <!-- Rules List -->
+            <ScrollViewer Visibility="{Binding IsEditing, Converter={StaticResource InverseBoolToVisibility}}"
+                          VerticalScrollBarVisibility="Auto">
+                <StackPanel>
+                    <!-- Empty State -->
+                    <Border Padding="40" CornerRadius="12"
+                            Background="{DynamicResource Brush.Surface}"
+                            BorderBrush="{DynamicResource Brush.BorderSubtle}" BorderThickness="1"
+                            Visibility="{Binding IsRulesEmpty, Converter={StaticResource BoolToVisibility}, Mode=OneWay}">
+                        <StackPanel HorizontalAlignment="Center">
+                            <TextBlock Text="&#xE70C;" FontFamily="Segoe MDL2 Assets" FontSize="36"
+                                       HorizontalAlignment="Center" Foreground="{DynamicResource Brush.TextTertiary}"
+                                       Margin="0,0,0,12"/>
+                            <TextBlock Text="No Rules Yet" Style="{StaticResource TextStyle.Subtitle}"
+                                       HorizontalAlignment="Center"/>
+                            <TextBlock Text="Add rules to automatically route URLs to specific browsers."
+                                       Style="{StaticResource TextStyle.BodySecondary}" HorizontalAlignment="Center"
+                                       Margin="0,6,0,0"/>
+                        </StackPanel>
+                    </Border>
+
+                    <ItemsControl ItemsSource="{Binding Rules}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Border Margin="0,0,0,8" CornerRadius="12"
+                                        Background="{DynamicResource Brush.Surface}"
+                                        BorderBrush="{DynamicResource Brush.BorderSubtle}"
+                                        BorderThickness="1" Padding="16,12">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+
+                                        <StackPanel Grid.Column="0" VerticalAlignment="Center">
+                                            <TextBlock Text="{Binding Name}" Style="{StaticResource TextStyle.Body}" FontWeight="SemiBold"/>
+                                            <StackPanel Orientation="Horizontal" Margin="0,3,0,0">
+                                                <Border CornerRadius="4" Padding="6,2" Margin="0,0,6,0"
+                                                        Background="{DynamicResource Brush.Surface2}">
+                                                    <TextBlock Text="{Binding RuleTypeLabel}"
+                                                               FontSize="10" Foreground="{DynamicResource Brush.TextSecondary}"/>
+                                                </Border>
+                                                <TextBlock Text="{Binding Pattern}"
+                                                           FontFamily="{StaticResource Font.Mono}"
+                                                           FontSize="12" Foreground="{DynamicResource Brush.Accent}"
+                                                           VerticalAlignment="Center"/>
+                                            </StackPanel>
+                                        </StackPanel>
+
+                                        <ToggleButton Grid.Column="1" Style="{StaticResource ToggleButton.Switch}"
+                                                      IsChecked="{Binding IsEnabled}" VerticalAlignment="Center"
+                                                      Margin="0,0,12,0"/>
+
+                                        <Button Grid.Column="2" Style="{StaticResource Button.Ghost}"
+                                                Command="{Binding DataContext.EditRuleCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                                CommandParameter="{Binding}"
+                                                Margin="0,0,4,0" ToolTip="Edit">
+                                            <TextBlock Text="&#xE70F;" FontFamily="Segoe MDL2 Assets" FontSize="13"/>
+                                        </Button>
+
+                                        <Button Grid.Column="3" Style="{StaticResource Button.Ghost}"
+                                                Command="{Binding DataContext.DeleteRuleCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                                CommandParameter="{Binding}"
+                                                ToolTip="Delete">
+                                            <TextBlock Text="&#xE74D;" FontFamily="Segoe MDL2 Assets" FontSize="13"
+                                                       Foreground="{DynamicResource Brush.Danger}"/>
+                                        </Button>
+                                    </Grid>
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </StackPanel>
+            </ScrollViewer>
+        </Grid>
+
+        <!-- Tip -->
+        <Border Grid.Row="2" Margin="0,12,0,0" Padding="12,8" CornerRadius="8"
+                Background="{DynamicResource Brush.Surface}" BorderThickness="1"
+                BorderBrush="{DynamicResource Brush.BorderSubtle}">
+            <TextBlock Style="{StaticResource TextStyle.Caption}" Foreground="{DynamicResource Brush.TextTertiary}">
+                <Run Text="Examples: "/>
+                <Run Text="youtube.com" FontFamily="{StaticResource Font.Mono}" Foreground="{DynamicResource Brush.Accent}"/>
+                <Run Text=" (Domain)  "/>
+                <Run Text="*.google.com" FontFamily="{StaticResource Font.Mono}" Foreground="{DynamicResource Brush.Accent}"/>
+                <Run Text=" (Wildcard)  "/>
+                <Run Text="https?://.*\.bank\.com" FontFamily="{StaticResource Font.Mono}" Foreground="{DynamicResource Brush.Accent}"/>
+                <Run Text=" (Regex)"/>
+            </TextBlock>
+        </Border>
+    </Grid>
+</Page>

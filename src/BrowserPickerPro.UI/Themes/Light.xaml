@@ -1,0 +1,26 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Color x:Key="Theme.Background">#FFF2F2F7</Color>
+    <Color x:Key="Theme.Surface">#FFFFFFFF</Color>
+    <Color x:Key="Theme.Surface2">#FFF2F2F7</Color>
+    <Color x:Key="Theme.Surface3">#FFE5E5EA</Color>
+    <Color x:Key="Theme.Border">#FFC6C6C8</Color>
+    <Color x:Key="Theme.BorderSubtle">#FFD1D1D6</Color>
+    <Color x:Key="Theme.TextPrimary">#FF000000</Color>
+    <Color x:Key="Theme.TextSecondary">#993C3C43</Color>
+    <Color x:Key="Theme.TextTertiary">#603C3C43</Color>
+    <Color x:Key="Theme.Accent">#FF0078D4</Color>
+    <Color x:Key="Theme.AccentHover">#FF1A88E0</Color>
+    <Color x:Key="Theme.AccentPress">#FF006BBC</Color>
+    <Color x:Key="Theme.Success">#FF34C759</Color>
+    <Color x:Key="Theme.Warning">#FFFF9500</Color>
+    <Color x:Key="Theme.Danger">#FFFF3B30</Color>
+    <Color x:Key="Theme.CardBackground">#FFFFFFFF</Color>
+    <Color x:Key="Theme.CardHover">#FFF5F5F7</Color>
+    <Color x:Key="Theme.CardPress">#FFE5E5EA</Color>
+    <Color x:Key="Theme.Overlay">#40000000</Color>
+    <Color x:Key="Theme.Shadow">#28000000</Color>
+    <Color x:Key="Theme.SidebarBackground">#FFF2F2F7</Color>
+    <Color x:Key="Theme.NavItemHover">#14000000</Color>
+    <Color x:Key="Theme.NavItemActive">#20000000</Color>
+</ResourceDictionary>

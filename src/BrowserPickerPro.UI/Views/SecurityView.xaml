@@ -1,0 +1,112 @@
+<Page x:Class="BrowserPickerPro.UI.Views.SecurityView"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+      xmlns:vm="clr-namespace:BrowserPickerPro.UI.ViewModels"
+      mc:Ignorable="d" Background="Transparent"
+      d:DataContext="{d:DesignInstance vm:SecurityViewModel}">
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <StackPanel Margin="32,24" MaxWidth="680" HorizontalAlignment="Left">
+
+            <!-- Header -->
+            <TextBlock Text="Security" Style="{StaticResource TextStyle.TitleLarge}"/>
+            <TextBlock Text="Optionally check URLs for threats before opening them in a browser."
+                       Style="{StaticResource TextStyle.BodySecondary}" Margin="0,4,0,24"/>
+
+            <!-- Master Toggle -->
+            <Border Style="{StaticResource Card.Default}" Margin="0,0,0,16">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <StackPanel Grid.Column="0">
+                        <TextBlock Text="Enable Security Checks" Style="{StaticResource TextStyle.Body}" FontWeight="SemiBold"/>
+                        <TextBlock Text="Show a security indicator before the browser picker appears."
+                                   Style="{StaticResource TextStyle.Caption}" Margin="0,3,0,0"/>
+                    </StackPanel>
+                    <ToggleButton Grid.Column="1" Style="{StaticResource ToggleButton.Switch}"
+                                  IsChecked="{Binding EnableSecurityCheck}" VerticalAlignment="Center"/>
+                </Grid>
+            </Border>
+
+            <!-- Provider: VirusTotal -->
+            <Border Style="{StaticResource Card.Default}" Margin="0,0,0,12"
+                    IsEnabled="{Binding EnableSecurityCheck}">
+                <StackPanel>
+                    <Grid Margin="0,0,0,12">
+                        <StackPanel Grid.Column="0">
+                            <TextBlock Text="VirusTotal" Style="{StaticResource TextStyle.Body}" FontWeight="SemiBold"/>
+                            <TextBlock Text="Multi-engine antivirus scanning (free API key required)"
+                                       Style="{StaticResource TextStyle.Caption}" Margin="0,2,0,0"/>
+                        </StackPanel>
+                        <ToggleButton HorizontalAlignment="Right" Style="{StaticResource ToggleButton.Switch}"
+                                      IsChecked="{Binding EnableVirusTotal}" VerticalAlignment="Top"/>
+                    </Grid>
+                    <Grid Visibility="{Binding EnableVirusTotal, Converter={StaticResource BoolToVisibility}}">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <StackPanel>
+                            <TextBlock Text="API Key" Style="{StaticResource TextStyle.Caption}" Margin="0,0,0,6"/>
+                            <TextBox Style="{StaticResource TextBox.Modern}"
+                                     Text="{Binding VirusTotalApiKey, UpdateSourceTrigger=PropertyChanged}"
+                                     FontFamily="{StaticResource Font.Mono}"/>
+                        </StackPanel>
+                    </Grid>
+                </StackPanel>
+            </Border>
+
+            <!-- Provider: Google Safe Browsing -->
+            <Border Style="{StaticResource Card.Default}" Margin="0,0,0,12"
+                    IsEnabled="{Binding EnableSecurityCheck}">
+                <StackPanel>
+                    <Grid Margin="0,0,0,12">
+                        <StackPanel>
+                            <TextBlock Text="Google Safe Browsing" Style="{StaticResource TextStyle.Body}" FontWeight="SemiBold"/>
+                            <TextBlock Text="Google's threat database (free API key required)"
+                                       Style="{StaticResource TextStyle.Caption}" Margin="0,2,0,0"/>
+                        </StackPanel>
+                        <ToggleButton HorizontalAlignment="Right" Style="{StaticResource ToggleButton.Switch}"
+                                      IsChecked="{Binding EnableGoogleSafeBrowsing}" VerticalAlignment="Top"/>
+                    </Grid>
+                    <StackPanel Visibility="{Binding EnableGoogleSafeBrowsing, Converter={StaticResource BoolToVisibility}}">
+                        <TextBlock Text="API Key" Style="{StaticResource TextStyle.Caption}" Margin="0,0,0,6"/>
+                        <TextBox Style="{StaticResource TextBox.Modern}"
+                                 Text="{Binding GoogleApiKey, UpdateSourceTrigger=PropertyChanged}"
+                                 FontFamily="{StaticResource Font.Mono}"/>
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+
+            <!-- Behavior -->
+            <Border Style="{StaticResource Card.Default}" Margin="0,0,0,24"
+                    IsEnabled="{Binding EnableSecurityCheck}">
+                <StackPanel>
+                    <TextBlock Text="Behavior" Style="{StaticResource TextStyle.Body}" FontWeight="SemiBold" Margin="0,0,0,12"/>
+                    <Grid Margin="0,0,0,12">
+                        <TextBlock Text="Block dangerous URLs automatically" Style="{StaticResource TextStyle.Body}" VerticalAlignment="Center"/>
+                        <ToggleButton HorizontalAlignment="Right" Style="{StaticResource ToggleButton.Switch}"
+                                      IsChecked="{Binding BlockDangerous}" VerticalAlignment="Center"/>
+                    </Grid>
+                    <Grid>
+                        <TextBlock Text="Show warning for suspicious URLs" Style="{StaticResource TextStyle.Body}" VerticalAlignment="Center"/>
+                        <ToggleButton HorizontalAlignment="Right" Style="{StaticResource ToggleButton.Switch}"
+                                      IsChecked="{Binding WarnSuspicious}" VerticalAlignment="Center"/>
+                    </Grid>
+                </StackPanel>
+            </Border>
+
+            <!-- Status + Save -->
+            <Grid>
+                <TextBlock Text="{Binding StatusMessage}" Style="{StaticResource TextStyle.BodySecondary}"
+                           VerticalAlignment="Center"
+                           Visibility="{Binding StatusMessage, Converter={StaticResource StringToVisibility}}"/>
+                <Button Content="Save Settings" Style="{StaticResource Button.Primary}"
+                        HorizontalAlignment="Right" Command="{Binding SaveCommand}"/>
+            </Grid>
+        </StackPanel>
+    </ScrollViewer>
+</Page>
