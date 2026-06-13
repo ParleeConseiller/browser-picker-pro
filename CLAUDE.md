@@ -206,13 +206,24 @@ Get-WinEvent -LogName Application -MaxEvents 20 |
 
 ---
 
-## Known working state (as of 2026-06-12)
+## Browser picker — drag-to-reorder
 
-- **Build**: 0 errors, informational NU1510 warnings only (redundant packages, safe to ignore)
+Browsers in `BrowserPickerWindow` can be dragged to reorder. Implemented with native WPF `DragDrop` — no third-party library.
+
+- **Drag detection**: `PreviewMouseLeftButtonDown` records start point; `PreviewMouseMove` starts `DragDrop.DoDragDrop()` once the movement exceeds `SystemParameters.MinimumHorizontalDragDistance` / `MinimumVerticalDragDistance`. Short movements still fire as normal clicks.
+- **Visual feedback**: target card opacity drops to 0.45 on `DragEnter`, restored on `DragLeave`/`Drop`.
+- **Reorder logic**: `BrowserPickerViewModel.MoveItem()` calls `ObservableCollection.Move()` on both `Browsers` and `FilteredBrowsers`, reassigns `Browser.OrderIndex` for every item, then fires `SaveBrowsersAsync`. Order persists across sessions.
+- **Key files**: `Windows/BrowserPickerWindow.xaml` (event bindings), `Windows/BrowserPickerWindow.xaml.cs` (drag handlers), `ViewModels/BrowserPickerViewModel.cs` (`MoveItem`).
+
+---
+
+## Known working state (as of 2026-06-13)
+
+- **Build**: 0 errors, informational NU1510 / CS8604 warnings only (pre-existing, safe to ignore)
 - **Tests**: 47/47 passing
-- **Published EXE**: `publish/win-x64/BrowserPickerPro.exe` — ~145 MB, self-contained, win-x64
+- **Published EXE**: `publish/win-x64/BrowserPickerPro.exe` — ~141 MB, self-contained, win-x64
 - **Dashboard**: opens, all pages navigate correctly
-- **Browser picker**: opens on URL argument, shows detected browsers, Escape closes
+- **Browser picker**: opens on URL argument, shows detected browsers, Escape closes, drag-to-reorder works
 - **Theme switching**: Light/Dark/System radio buttons work, brushes update live
 - **Windows Setup page**: loads, Register/Unregister/Open Default Apps buttons work
 - **Icon**: real icon embedded in EXE

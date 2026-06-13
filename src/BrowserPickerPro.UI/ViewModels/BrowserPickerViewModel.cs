@@ -112,6 +112,25 @@ public partial class BrowserPickerViewModel : ObservableObject
     [RelayCommand]
     private void Cancel() => Cancelled?.Invoke();
 
+    public void MoveItem(BrowserItemViewModel source, BrowserItemViewModel target)
+    {
+        var fromIndex = Browsers.IndexOf(source);
+        var toIndex = Browsers.IndexOf(target);
+        if (fromIndex < 0 || toIndex < 0) return;
+
+        Browsers.Move(fromIndex, toIndex);
+
+        var filtFrom = FilteredBrowsers.IndexOf(source);
+        var filtTo = FilteredBrowsers.IndexOf(target);
+        if (filtFrom >= 0 && filtTo >= 0)
+            FilteredBrowsers.Move(filtFrom, filtTo);
+
+        for (int i = 0; i < Browsers.Count; i++)
+            Browsers[i].Browser.OrderIndex = i;
+
+        _ = _settingsService.SaveBrowsersAsync(Browsers.Select(b => b.Browser));
+    }
+
     private async Task RunSecurityCheckAsync(string url)
     {
         IsSecurityChecking = true;

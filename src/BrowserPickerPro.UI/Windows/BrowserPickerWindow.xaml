@@ -251,7 +251,8 @@
             </StackPanel>
 
             <!-- Browser Grid -->
-            <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled"
+            <ScrollViewer Grid.Row="1" Style="{StaticResource ScrollViewer.Modern}"
+                          VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled"
                           Visibility="{Binding IsLoading, Converter={StaticResource InverseBoolToVisibility}}">
                 <ItemsControl ItemsSource="{Binding FilteredBrowsers}">
                     <ItemsControl.ItemsPanel>
@@ -263,7 +264,15 @@
                         <DataTemplate>
                             <Button Style="{StaticResource BrowserCardStyle}"
                                     Command="{Binding DataContext.SelectBrowserCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
-                                    CommandParameter="{Binding}">
+                                    CommandParameter="{Binding}"
+                                    Tag="{Binding}"
+                                    AllowDrop="True"
+                                    PreviewMouseLeftButtonDown="BrowserCard_PreviewMouseLeftButtonDown"
+                                    PreviewMouseMove="BrowserCard_PreviewMouseMove"
+                                    DragOver="BrowserCard_DragOver"
+                                    DragEnter="BrowserCard_DragEnter"
+                                    DragLeave="BrowserCard_DragLeave"
+                                    Drop="BrowserCard_Drop">
                                 <Grid>
                                     <Grid.RowDefinitions>
                                         <RowDefinition Height="*"/>
