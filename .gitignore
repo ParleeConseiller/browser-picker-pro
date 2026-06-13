@@ -71,7 +71,8 @@ secrets.json
 ehthumbs.db
 Thumbs.db
 Desktop.ini
-/publish/win-x64/BrowserPickerPro.exe
+# Published EXE and all self-contained publish output
+/publish/
 
 # Windows installer build artifacts
 installer/BrowserPickerPro.Installer/bin/
