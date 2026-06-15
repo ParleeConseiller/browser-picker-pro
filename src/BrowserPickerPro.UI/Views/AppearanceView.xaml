@@ -58,7 +58,7 @@
             </Border>
 
             <!-- Picker Settings -->
-            <Border Style="{StaticResource Card.Default}" Margin="0,0,0,24">
+            <Border Style="{StaticResource Card.Default}" Margin="0,0,0,16">
                 <StackPanel>
                     <TextBlock Text="Browser Picker" Style="{StaticResource TextStyle.Body}" FontWeight="SemiBold" Margin="0,0,0,12"/>
                     <Grid Margin="0,0,0,12">
@@ -71,6 +71,76 @@
                         <ToggleButton HorizontalAlignment="Right" Style="{StaticResource ToggleButton.Switch}"
                                       IsChecked="{Binding ShowRecentUsage}" VerticalAlignment="Center"/>
                     </Grid>
+                </StackPanel>
+            </Border>
+
+            <!-- Picker Window Style -->
+            <Border Style="{StaticResource Card.Default}" Margin="0,0,0,24">
+                <StackPanel>
+                    <TextBlock Text="Picker Window Style" Style="{StaticResource TextStyle.Body}" FontWeight="SemiBold" Margin="0,0,0,16"/>
+
+                    <!-- Window mode -->
+                    <TextBlock Text="Window mode" Style="{StaticResource TextStyle.Caption}" Foreground="{DynamicResource Brush.TextSecondary}" Margin="0,0,0,6"/>
+                    <StackPanel Orientation="Horizontal" Margin="0,0,0,16">
+                        <RadioButton Content="Modal (floating)" GroupName="PickerWindowStyle" Margin="0,0,20,0"
+                                     IsChecked="{Binding PickerWindowStyle, Converter={StaticResource EnumToBool}, ConverterParameter=Modal}"
+                                     FontFamily="{StaticResource Font.Primary}" Cursor="Hand"/>
+                        <RadioButton Content="Fullscreen overlay" GroupName="PickerWindowStyle"
+                                     IsChecked="{Binding PickerWindowStyle, Converter={StaticResource EnumToBool}, ConverterParameter=Fullscreen}"
+                                     FontFamily="{StaticResource Font.Primary}" Cursor="Hand"/>
+                    </StackPanel>
+
+                    <!-- Card layout -->
+                    <TextBlock Text="Card layout" Style="{StaticResource TextStyle.Caption}" Foreground="{DynamicResource Brush.TextSecondary}" Margin="0,0,0,6"/>
+                    <StackPanel Orientation="Horizontal" Margin="0,0,0,16">
+                        <RadioButton Content="Wrap grid" GroupName="PickerCardLayout" Margin="0,0,20,0"
+                                     IsChecked="{Binding PickerCardLayout, Converter={StaticResource EnumToBool}, ConverterParameter=WrapGrid}"
+                                     FontFamily="{StaticResource Font.Primary}" Cursor="Hand"/>
+                        <RadioButton Content="Single row" GroupName="PickerCardLayout"
+                                     IsChecked="{Binding PickerCardLayout, Converter={StaticResource EnumToBool}, ConverterParameter=SingleRow}"
+                                     FontFamily="{StaticResource Font.Primary}" Cursor="Hand"/>
+                    </StackPanel>
+
+                    <!-- Background mode -->
+                    <TextBlock Text="Background" Style="{StaticResource TextStyle.Caption}" Foreground="{DynamicResource Brush.TextSecondary}" Margin="0,0,0,6"/>
+                    <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                        <RadioButton Content="Dark gradient" GroupName="PickerBgMode" Margin="0,0,20,0"
+                                     IsChecked="{Binding PickerBackgroundMode, Converter={StaticResource EnumToBool}, ConverterParameter=DarkGradient}"
+                                     FontFamily="{StaticResource Font.Primary}" Cursor="Hand"/>
+                        <RadioButton Content="Custom file (image / GIF / video)" GroupName="PickerBgMode"
+                                     IsChecked="{Binding PickerBackgroundMode, Converter={StaticResource EnumToBool}, ConverterParameter=CustomFile}"
+                                     FontFamily="{StaticResource Font.Primary}" Cursor="Hand"/>
+                    </StackPanel>
+
+                    <!-- Custom file picker -->
+                    <Grid Margin="0,0,0,16"
+                          Visibility="{Binding IsCustomFileMode, Converter={StaticResource BoolToVisibility}}">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBox Grid.Column="0" Style="{StaticResource TextBox.Modern}"
+                                 Text="{Binding PickerBackgroundImagePath, UpdateSourceTrigger=PropertyChanged}"
+                                 Margin="0,0,8,0"/>
+                        <Button Grid.Column="1" Content="Browse…" Style="{StaticResource Button.Secondary}"
+                                Command="{Binding BrowseBackgroundCommand}"/>
+                    </Grid>
+
+                    <!-- Dark tint slider -->
+                    <TextBlock Style="{StaticResource TextStyle.Body}" Margin="0,0,0,4">
+                        <Run Text="Dark tint: "/>
+                        <Run Text="{Binding PickerDarkTintPercent, Mode=OneWay, StringFormat=\{0\}%}"/>
+                    </TextBlock>
+                    <Slider Minimum="0" Maximum="90" Value="{Binding PickerDarkTintPercent}"
+                            TickFrequency="5" IsSnapToTickEnabled="True" Margin="0,0,0,16"/>
+
+                    <!-- Card size slider -->
+                    <TextBlock Style="{StaticResource TextStyle.Body}" Margin="0,0,0,4">
+                        <Run Text="Card size: "/>
+                        <Run Text="{Binding PickerCardSize, Mode=OneWay, StringFormat=\{0\} px}"/>
+                    </TextBlock>
+                    <Slider Minimum="140" Maximum="260" Value="{Binding PickerCardSize}"
+                            TickFrequency="10" IsSnapToTickEnabled="True"/>
                 </StackPanel>
             </Border>
 

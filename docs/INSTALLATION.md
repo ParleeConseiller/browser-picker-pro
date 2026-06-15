@@ -69,5 +69,5 @@ Windows 11 requires this manual step by design. It cannot be automated.
 | OS (Mica effect) | Windows 11 22000+ |
 | Architecture | x64 |
 | RAM | ~50 MB |
-| Disk | ~145 MB (self-contained) |
+| Disk | ~147 MB (self-contained) |
 | .NET Runtime | Bundled (self-contained) |

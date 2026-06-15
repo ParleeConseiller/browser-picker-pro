@@ -19,10 +19,12 @@ A modern, beautiful Windows application that intercepts web links and lets you c
 
 ## Features
 
-- **Beautiful Browser Picker** — Floating Fluent Design window with animated cards, Mica/Acrylic effect
+- **Beautiful Browser Picker** — Glassmorphism floating window with staggered entrance animations, 3D card hover effects (scale, tilt, specular shine, spring-back), and an `ElasticEase` snap-back
+- **Fully Customizable Picker** — Choose Modal or Fullscreen, WrapGrid or Single Row, dark gradient or custom image/video background, adjustable dark tint and card size — all in Settings
+- **Drag-to-Reorder** — Drag browser cards in the picker to set your preferred order; order is persisted
 - **Smart Rules Engine** — Route URLs by domain, wildcard, or regex to specific browsers
 - **Multi-Profile Support** — Chrome profiles, Firefox profiles, Edge profiles
-- **Browser Detection** — Automatically finds Chrome, Edge, Firefox, Brave, Vivaldi, Opera, Opera GX, and more
+- **Browser Detection** — Automatically finds Chrome, Edge, Firefox, Brave, Vivaldi, Opera, Opera GX, Zen, and more
 - **Security Checks** — Optional VirusTotal and Google Safe Browsing integration
 - **Import/Export** — Full configuration backup and restore
 - **Windows Integration** — Register as default HTTP/HTTPS/HTML handler (no admin required)
@@ -45,7 +47,7 @@ cd browser-picker-pro
 .\scripts\build.ps1 -Test -Publish
 ```
 
-Requires [.NET 9 SDK](https://dotnet.microsoft.com/download/dotnet/9.0).
+Requires [.NET 10 SDK](https://dotnet.microsoft.com/download/dotnet/10.0).
 
 ### Register as Default Browser
 
@@ -104,7 +106,7 @@ Both require free API keys. See [API_INTEGRATIONS.md](docs/API_INTEGRATIONS.md).
 
 | Component | Technology |
 |---|---|
-| UI | WPF + .NET 9 |
+| UI | WPF + .NET 10 |
 | Architecture | MVVM, Clean Architecture, SOLID |
 | DI | Microsoft.Extensions.DependencyInjection |
 | MVVM | CommunityToolkit.Mvvm |
@@ -139,4 +141,4 @@ BrowserPickerPro/
 
 MIT License — see [LICENSE.md](LICENSE.md)
 
-© 2025 Parlee Conseiller, Inc. All rights reserved.
+© 2026 Parlee Conseiller, Inc. All rights reserved.

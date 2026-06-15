@@ -21,6 +21,14 @@ public class AppSettings
     public int PickerWindowColumns { get; set; } = 3;
     public SecuritySettings Security { get; set; } = new();
     public string ConfigVersion { get; set; } = "1.0";
+
+    // Picker window appearance
+    public PickerWindowStyle PickerWindowStyle { get; set; } = PickerWindowStyle.Modal;
+    public PickerCardLayout PickerCardLayout { get; set; } = PickerCardLayout.WrapGrid;
+    public PickerBackgroundMode PickerBackgroundMode { get; set; } = PickerBackgroundMode.DarkGradient;
+    public string? PickerBackgroundImagePath { get; set; }
+    public double PickerDarkTintOpacity { get; set; } = 0.55;
+    public int PickerCardSize { get; set; } = 190;
 }
 
 public class SecuritySettings

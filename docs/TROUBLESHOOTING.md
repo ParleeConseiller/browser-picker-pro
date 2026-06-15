@@ -60,7 +60,7 @@
 
 1. Check logs in `%LocalAppData%\BrowserPickerPro\Logs\`
 2. Delete `%AppData%\BrowserPickerPro\settings.json` to reset to defaults
-3. Ensure .NET 9 Runtime is installed
+3. The application is self-contained — no separate .NET runtime installation is needed
 4. File a bug report with the log contents
 
 ---

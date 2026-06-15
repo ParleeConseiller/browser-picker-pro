@@ -6,105 +6,43 @@
         xmlns:vm="clr-namespace:BrowserPickerPro.UI.ViewModels"
         mc:Ignorable="d"
         Title="Browser Picker Pro"
-        Width="720" Height="520"
-        MinWidth="560" MinHeight="400"
+        Width="1000" Height="640"
         WindowStartupLocation="CenterScreen"
         WindowStyle="None"
-        AllowsTransparency="False"
+        AllowsTransparency="True"
+        Background="Transparent"
         ResizeMode="NoResize"
         ShowInTaskbar="True"
         d:DataContext="{d:DesignInstance vm:BrowserPickerViewModel}">
 
     <Window.Resources>
         <Style x:Key="BrowserCardStyle" TargetType="Button">
-            <Setter Property="Background" Value="{DynamicResource Brush.CardBackground}"/>
-            <Setter Property="BorderThickness" Value="1"/>
-            <Setter Property="BorderBrush" Value="{DynamicResource Brush.BorderSubtle}"/>
             <Setter Property="Cursor" Value="Hand"/>
-            <Setter Property="Width" Value="154"/>
-            <Setter Property="Height" Value="138"/>
-            <Setter Property="Margin" Value="6"/>
+            <Setter Property="RenderTransformOrigin" Value="0.5,0.5"/>
+            <Setter Property="Margin" Value="10,8"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
                         <Border x:Name="CardBorder"
-                                Background="{TemplateBinding Background}"
-                                BorderBrush="{TemplateBinding BorderBrush}"
-                                BorderThickness="{TemplateBinding BorderThickness}"
-                                CornerRadius="14"
-                                RenderTransformOrigin="0.5,0.5">
-                            <Border.RenderTransform>
-                                <ScaleTransform x:Name="CardScale" ScaleX="1" ScaleY="1"/>
-                            </Border.RenderTransform>
-                            <Border.Effect>
-                                <DropShadowEffect x:Name="CardShadow"
-                                                  ShadowDepth="0" BlurRadius="8"
-                                                  Opacity="0.08" Color="Black"/>
-                            </Border.Effect>
+                                CornerRadius="18"
+                                Background="#18FFFFFF"
+                                BorderThickness="1">
+                            <Border.BorderBrush>
+                                <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                                    <GradientStop Color="#44FFFFFF" Offset="0"/>
+                                    <GradientStop Color="#11FFFFFF" Offset="1"/>
+                                </LinearGradientBrush>
+                            </Border.BorderBrush>
                             <ContentPresenter/>
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="CardBorder" Property="Background" Value="#2EFFFFFF"/>
                                 <Setter TargetName="CardBorder" Property="BorderBrush" Value="{DynamicResource Brush.Accent}"/>
-                                <Setter TargetName="CardBorder" Property="Background" Value="{DynamicResource Brush.Surface2}"/>
-                                <Trigger.EnterActions>
-                                    <BeginStoryboard>
-                                        <Storyboard>
-                                            <DoubleAnimation Storyboard.TargetName="CardScale"
-                                                             Storyboard.TargetProperty="ScaleX"
-                                                             To="1.04" Duration="0:0:0.15">
-                                                <DoubleAnimation.EasingFunction><CubicEase EasingMode="EaseOut"/></DoubleAnimation.EasingFunction>
-                                            </DoubleAnimation>
-                                            <DoubleAnimation Storyboard.TargetName="CardScale"
-                                                             Storyboard.TargetProperty="ScaleY"
-                                                             To="1.04" Duration="0:0:0.15">
-                                                <DoubleAnimation.EasingFunction><CubicEase EasingMode="EaseOut"/></DoubleAnimation.EasingFunction>
-                                            </DoubleAnimation>
-                                            <DoubleAnimation Storyboard.TargetName="CardShadow"
-                                                             Storyboard.TargetProperty="BlurRadius"
-                                                             To="20" Duration="0:0:0.15"/>
-                                            <DoubleAnimation Storyboard.TargetName="CardShadow"
-                                                             Storyboard.TargetProperty="Opacity"
-                                                             To="0.18" Duration="0:0:0.15"/>
-                                        </Storyboard>
-                                    </BeginStoryboard>
-                                </Trigger.EnterActions>
-                                <Trigger.ExitActions>
-                                    <BeginStoryboard>
-                                        <Storyboard>
-                                            <DoubleAnimation Storyboard.TargetName="CardScale"
-                                                             Storyboard.TargetProperty="ScaleX"
-                                                             To="1" Duration="0:0:0.12">
-                                                <DoubleAnimation.EasingFunction><CubicEase EasingMode="EaseOut"/></DoubleAnimation.EasingFunction>
-                                            </DoubleAnimation>
-                                            <DoubleAnimation Storyboard.TargetName="CardScale"
-                                                             Storyboard.TargetProperty="ScaleY"
-                                                             To="1" Duration="0:0:0.12">
-                                                <DoubleAnimation.EasingFunction><CubicEase EasingMode="EaseOut"/></DoubleAnimation.EasingFunction>
-                                            </DoubleAnimation>
-                                            <DoubleAnimation Storyboard.TargetName="CardShadow"
-                                                             Storyboard.TargetProperty="BlurRadius"
-                                                             To="8" Duration="0:0:0.12"/>
-                                            <DoubleAnimation Storyboard.TargetName="CardShadow"
-                                                             Storyboard.TargetProperty="Opacity"
-                                                             To="0.08" Duration="0:0:0.12"/>
-                                        </Storyboard>
-                                    </BeginStoryboard>
-                                </Trigger.ExitActions>
                             </Trigger>
                             <Trigger Property="IsPressed" Value="True">
-                                <Trigger.EnterActions>
-                                    <BeginStoryboard>
-                                        <Storyboard>
-                                            <DoubleAnimation Storyboard.TargetName="CardScale"
-                                                             Storyboard.TargetProperty="ScaleX"
-                                                             To="0.97" Duration="0:0:0.08"/>
-                                            <DoubleAnimation Storyboard.TargetName="CardScale"
-                                                             Storyboard.TargetProperty="ScaleY"
-                                                             To="0.97" Duration="0:0:0.08"/>
-                                        </Storyboard>
-                                    </BeginStoryboard>
-                                </Trigger.EnterActions>
+                                <Setter TargetName="CardBorder" Property="Background" Value="#40FFFFFF"/>
+                                <Setter TargetName="CardBorder" Property="Opacity" Value="0.85"/>
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -113,240 +51,360 @@
         </Style>
     </Window.Resources>
 
-    <Grid Background="{DynamicResource Brush.Background}">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="40"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-        </Grid.RowDefinitions>
+    <Grid>
+        <!-- ── Outer shadow for modal mode ── -->
+        <Border x:Name="MainContainer"
+                Margin="32"
+                MaxWidth="960" MaxHeight="600"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                CornerRadius="22">
+            <Border.Effect>
+                <DropShadowEffect ShadowDepth="0" BlurRadius="70" Opacity="0.75" Color="Black"/>
+            </Border.Effect>
 
-        <!-- Title Bar -->
-        <Grid Grid.Row="0" Background="Transparent" MouseLeftButtonDown="TitleBar_MouseLeftButtonDown">
-            <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="16,0">
-                <TextBlock Text="🌐" FontSize="14" VerticalAlignment="Center" Margin="0,0,8,0"/>
-                <TextBlock Text="Browser Picker Pro" VerticalAlignment="Center"
-                           FontFamily="{StaticResource Font.Primary}"
-                           FontSize="13" FontWeight="Medium"
-                           Foreground="{DynamicResource Brush.TextSecondary}"/>
-            </StackPanel>
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                <Button Style="{StaticResource Button.TitleBar}" Click="MinimizeButton_Click" ToolTip="Minimize">
-                    <TextBlock Text="&#xE921;" FontFamily="Segoe MDL2 Assets" FontSize="10"
-                               Foreground="{DynamicResource Brush.TextSecondary}"/>
-                </Button>
-                <Button Style="{StaticResource Button.TitleBarClose}" Click="CloseButton_Click" ToolTip="Cancel">
-                    <TextBlock Text="&#xE8BB;" FontFamily="Segoe MDL2 Assets" FontSize="10"/>
-                </Button>
-            </StackPanel>
-        </Grid>
+            <!-- ── Inner glass panel (clips background) ── -->
+            <Border x:Name="InnerContainer"
+                    CornerRadius="22"
+                    Background="Transparent"
+                    ClipToBounds="True">
+                <Grid>
+                    <!-- ── Background layers ── -->
+                    <Grid x:Name="BackgroundLayer">
+                        <!-- Dark gradient (default) -->
+                        <Border x:Name="BgGradient">
+                            <Border.Background>
+                                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                    <GradientStop Color="#0D1117" Offset="0"/>
+                                    <GradientStop Color="#161B2E" Offset="0.5"/>
+                                    <GradientStop Color="#0D1117" Offset="1"/>
+                                </LinearGradientBrush>
+                            </Border.Background>
+                        </Border>
+                        <!-- Subtle radial accent glow -->
+                        <Ellipse HorizontalAlignment="Center" VerticalAlignment="Center"
+                                 Width="700" Height="380" Opacity="0.08">
+                            <Ellipse.Fill>
+                                <RadialGradientBrush>
+                                    <GradientStop Color="#0078D4" Offset="0"/>
+                                    <GradientStop Color="Transparent" Offset="1"/>
+                                </RadialGradientBrush>
+                            </Ellipse.Fill>
+                        </Ellipse>
+                        <!-- Custom static image -->
+                        <Image x:Name="BgImage" Stretch="UniformToFill" Visibility="Collapsed">
+                            <Image.Effect>
+                                <BlurEffect x:Name="BgBlurEffect" Radius="0"/>
+                            </Image.Effect>
+                        </Image>
+                        <!-- Animated GIF / video -->
+                        <MediaElement x:Name="BgMedia" Stretch="UniformToFill" Visibility="Collapsed"
+                                      LoadedBehavior="Play" UnloadedBehavior="Stop"
+                                      MediaEnded="BgMedia_MediaEnded"/>
+                        <!-- Dark tint overlay (opacity set in code) -->
+                        <Border x:Name="DarkTintOverlay" Opacity="0.55">
+                            <Border.Background>
+                                <SolidColorBrush Color="Black"/>
+                            </Border.Background>
+                        </Border>
+                        <!-- Top glass highlight line -->
+                        <Border VerticalAlignment="Top" Height="1" Opacity="0.35">
+                            <Border.Background>
+                                <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                                    <GradientStop Color="Transparent" Offset="0"/>
+                                    <GradientStop Color="White" Offset="0.4"/>
+                                    <GradientStop Color="White" Offset="0.6"/>
+                                    <GradientStop Color="Transparent" Offset="1"/>
+                                </LinearGradientBrush>
+                            </Border.Background>
+                        </Border>
+                    </Grid>
 
-        <!-- URL Bar -->
-        <Border Grid.Row="1" Margin="20,4,20,12"
-                Background="{DynamicResource Brush.Surface}"
-                BorderBrush="{DynamicResource Brush.Border}"
-                BorderThickness="1" CornerRadius="10" Padding="12,10">
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="*"/>
-                </Grid.ColumnDefinitions>
-                <TextBlock Grid.Column="0" Text="&#xE774;" FontFamily="Segoe MDL2 Assets"
-                           FontSize="14" VerticalAlignment="Center" Margin="0,0,10,0"
-                           Foreground="{DynamicResource Brush.TextTertiary}"/>
-                <TextBlock Grid.Column="1" Text="{Binding DisplayUrl}"
-                           FontFamily="{StaticResource Font.Mono}"
-                           FontSize="12" VerticalAlignment="Center"
-                           Foreground="{DynamicResource Brush.TextSecondary}"
-                           TextTrimming="CharacterEllipsis" ToolTip="{Binding DisplayUrl}"/>
-            </Grid>
-        </Border>
+                    <!-- ── Content ── -->
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="44"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
 
-        <!-- Security Panel -->
-        <Border Grid.Row="2" Margin="20,0,20,10"
-                Visibility="{Binding ShowSecurityPanel, Converter={StaticResource BoolToVisibility}}">
-            <Border x:Name="SecurityBanner" CornerRadius="8" Padding="12,8">
-                <Border.Style>
-                    <Style TargetType="Border">
-                        <Setter Property="Background" Value="#1A30D158"/>
-                        <Style.Triggers>
-                            <DataTrigger Binding="{Binding IsSecurityChecking}" Value="True">
-                                <Setter Property="Background" Value="{DynamicResource Brush.Surface2}"/>
-                            </DataTrigger>
-                            <DataTrigger Binding="{Binding SecurityResult.OverallLevel}" Value="Suspicious">
-                                <Setter Property="Background" Value="#1AFF9F0A"/>
-                            </DataTrigger>
-                            <DataTrigger Binding="{Binding SecurityResult.OverallLevel}" Value="Dangerous">
-                                <Setter Property="Background" Value="#1AFF453A"/>
-                            </DataTrigger>
-                        </Style.Triggers>
-                    </Style>
-                </Border.Style>
-                <StackPanel Orientation="Horizontal">
-                    <TextBlock VerticalAlignment="Center" Margin="0,0,8,0" FontSize="14"
-                               Visibility="{Binding IsSecurityChecking, Converter={StaticResource BoolToVisibility}}">
-                        <Run Text="Checking security..."/>
-                    </TextBlock>
-                    <StackPanel Visibility="{Binding IsSecurityChecking, Converter={StaticResource InverseBoolToVisibility}}">
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="{Binding SecurityResult.OverallLevel, Converter={StaticResource SecurityLevelToIcon}}"
-                                       FontSize="14" FontWeight="Bold" VerticalAlignment="Center" Margin="0,0,8,0"
-                                       Foreground="{Binding SecurityResult.OverallLevel, Converter={StaticResource SecurityLevelToBrush}}"/>
-                            <TextBlock FontFamily="{StaticResource Font.Primary}" FontSize="12" VerticalAlignment="Center"
-                                       Foreground="{DynamicResource Brush.TextSecondary}">
-                                <Run Text="Security check: "/>
-                                <Run Text="{Binding SecurityResult.OverallLevel, Mode=OneWay}" FontWeight="Medium"
-                                     Foreground="{Binding SecurityResult.OverallLevel, Mode=OneWay, Converter={StaticResource SecurityLevelToBrush}}"/>
-                            </TextBlock>
+                        <!-- Title Bar -->
+                        <Grid Grid.Row="0" Background="Transparent"
+                              MouseLeftButtonDown="TitleBar_MouseLeftButtonDown">
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="20,0">
+                                <TextBlock Text="🌐" FontSize="14" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                                <TextBlock Text="Browser Picker Pro" VerticalAlignment="Center"
+                                           FontFamily="{StaticResource Font.Primary}"
+                                           FontSize="13" FontWeight="Medium"
+                                           Foreground="#88FFFFFF"/>
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                                <Button Style="{StaticResource Button.TitleBar}" Click="MinimizeButton_Click" ToolTip="Minimize">
+                                    <TextBlock Text="&#xE921;" FontFamily="Segoe MDL2 Assets" FontSize="10" Foreground="#88FFFFFF"/>
+                                </Button>
+                                <Button Style="{StaticResource Button.TitleBarClose}" Click="CloseButton_Click" ToolTip="Cancel">
+                                    <TextBlock Text="&#xE8BB;" FontFamily="Segoe MDL2 Assets" FontSize="10"/>
+                                </Button>
+                            </StackPanel>
+                        </Grid>
+
+                        <!-- URL Bar -->
+                        <Border Grid.Row="1" Margin="20,0,20,10"
+                                Background="#18FFFFFF" BorderBrush="#20FFFFFF"
+                                BorderThickness="1" CornerRadius="10" Padding="12,9">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Grid.Column="0" Text="&#xE774;" FontFamily="Segoe MDL2 Assets"
+                                           FontSize="13" VerticalAlignment="Center" Margin="0,0,10,0"
+                                           Foreground="#55FFFFFF"/>
+                                <TextBlock Grid.Column="1" Text="{Binding DisplayUrl}"
+                                           FontFamily="{StaticResource Font.Mono}"
+                                           FontSize="12" VerticalAlignment="Center"
+                                           Foreground="#AAFFFFFF"
+                                           TextTrimming="CharacterEllipsis" ToolTip="{Binding DisplayUrl}"/>
+                            </Grid>
+                        </Border>
+
+                        <!-- Security Panel -->
+                        <Border Grid.Row="2" Margin="20,0,20,8"
+                                Visibility="{Binding ShowSecurityPanel, Converter={StaticResource BoolToVisibility}}">
+                            <Border CornerRadius="8" Padding="12,7">
+                                <Border.Style>
+                                    <Style TargetType="Border">
+                                        <Setter Property="Background" Value="#1A30D158"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding IsSecurityChecking}" Value="True">
+                                                <Setter Property="Background" Value="#18FFFFFF"/>
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding SecurityResult.OverallLevel}" Value="Suspicious">
+                                                <Setter Property="Background" Value="#1AFF9F0A"/>
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding SecurityResult.OverallLevel}" Value="Dangerous">
+                                                <Setter Property="Background" Value="#1AFF453A"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Border.Style>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock VerticalAlignment="Center" Margin="0,0,8,0" FontSize="13"
+                                               Foreground="#AAFFFFFF"
+                                               Visibility="{Binding IsSecurityChecking, Converter={StaticResource BoolToVisibility}}">
+                                        <Run Text="Checking security..."/>
+                                    </TextBlock>
+                                    <StackPanel Visibility="{Binding IsSecurityChecking, Converter={StaticResource InverseBoolToVisibility}}">
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock Text="{Binding SecurityResult.OverallLevel, Converter={StaticResource SecurityLevelToIcon}}"
+                                                       FontSize="13" FontWeight="Bold" VerticalAlignment="Center" Margin="0,0,8,0"
+                                                       Foreground="{Binding SecurityResult.OverallLevel, Converter={StaticResource SecurityLevelToBrush}}"/>
+                                            <TextBlock FontFamily="{StaticResource Font.Primary}" FontSize="12" VerticalAlignment="Center"
+                                                       Foreground="#AAFFFFFF">
+                                                <Run Text="Security: "/>
+                                                <Run Text="{Binding SecurityResult.OverallLevel, Mode=OneWay}" FontWeight="Medium"
+                                                     Foreground="{Binding SecurityResult.OverallLevel, Mode=OneWay, Converter={StaticResource SecurityLevelToBrush}}"/>
+                                            </TextBlock>
+                                        </StackPanel>
+                                    </StackPanel>
+                                </StackPanel>
+                            </Border>
+                        </Border>
+
+                        <!-- Header + Search -->
+                        <Grid Grid.Row="3" Margin="20,4,20,10">
+                            <TextBlock Text="Open with"
+                                       FontFamily="{StaticResource Font.Primary}"
+                                       FontSize="20" FontWeight="Light"
+                                       Foreground="#CCFFFFFF"
+                                       VerticalAlignment="Center"/>
+                            <TextBox x:Name="SearchBox" Style="{StaticResource TextBox.Modern}"
+                                     Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
+                                     Width="190" HorizontalAlignment="Right"
+                                     Background="#18FFFFFF" BorderBrush="#22FFFFFF"
+                                     Foreground="White" CaretBrush="White">
+                                <TextBox.Resources>
+                                    <Style TargetType="TextBox" BasedOn="{StaticResource TextBox.Modern}">
+                                        <Style.Triggers>
+                                            <Trigger Property="Text" Value="">
+                                                <Setter Property="Background">
+                                                    <Setter.Value>
+                                                        <VisualBrush AlignmentX="Left" AlignmentY="Center" Stretch="None">
+                                                            <VisualBrush.Visual>
+                                                                <Label Content="Search browsers..." Padding="10,0"
+                                                                       Foreground="#55FFFFFF"
+                                                                       FontFamily="{StaticResource Font.Primary}"
+                                                                       FontSize="12"/>
+                                                            </VisualBrush.Visual>
+                                                        </VisualBrush>
+                                                    </Setter.Value>
+                                                </Setter>
+                                            </Trigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </TextBox.Resources>
+                            </TextBox>
+                        </Grid>
+
+                        <!-- Loading -->
+                        <StackPanel Grid.Row="4" HorizontalAlignment="Center" VerticalAlignment="Center"
+                                    Visibility="{Binding IsLoading, Converter={StaticResource BoolToVisibility}}">
+                            <TextBlock Text="Detecting browsers..."
+                                       FontFamily="{StaticResource Font.Primary}"
+                                       FontSize="14" Foreground="#88FFFFFF"/>
                         </StackPanel>
-                    </StackPanel>
-                </StackPanel>
+
+                        <!-- Browser Cards -->
+                        <ScrollViewer x:Name="BrowserScrollViewer" Grid.Row="4"
+                                      Style="{StaticResource ScrollViewer.Modern}"
+                                      VerticalScrollBarVisibility="Auto"
+                                      HorizontalScrollBarVisibility="Disabled"
+                                      Padding="0,4,0,8"
+                                      Visibility="{Binding IsLoading, Converter={StaticResource InverseBoolToVisibility}}">
+                            <ItemsControl x:Name="BrowserItemsControl" ItemsSource="{Binding FilteredBrowsers}">
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <WrapPanel HorizontalAlignment="Center"/>
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <!-- Entrance animation wrapper -->
+                                        <Border Opacity="0" RenderTransformOrigin="0.5,1">
+                                            <Border.RenderTransform>
+                                                <TranslateTransform Y="28"/>
+                                            </Border.RenderTransform>
+                                            <Border.Style>
+                                                <Style TargetType="Border">
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding IsEntranceVisible}" Value="True">
+                                                            <DataTrigger.EnterActions>
+                                                                <BeginStoryboard>
+                                                                    <Storyboard>
+                                                                        <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                                                                                         From="0" To="1" Duration="0:0:0.38">
+                                                                            <DoubleAnimation.EasingFunction>
+                                                                                <CubicEase EasingMode="EaseOut"/>
+                                                                            </DoubleAnimation.EasingFunction>
+                                                                        </DoubleAnimation>
+                                                                        <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)"
+                                                                                         From="28" To="0" Duration="0:0:0.38">
+                                                                            <DoubleAnimation.EasingFunction>
+                                                                                <CubicEase EasingMode="EaseOut"/>
+                                                                            </DoubleAnimation.EasingFunction>
+                                                                        </DoubleAnimation>
+                                                                    </Storyboard>
+                                                                </BeginStoryboard>
+                                                            </DataTrigger.EnterActions>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </Border.Style>
+
+                                            <Button Style="{StaticResource BrowserCardStyle}"
+                                                    Width="{Binding DataContext.CardWidth, RelativeSource={RelativeSource AncestorType=ItemsControl}, Mode=OneWay}"
+                                                    Height="{Binding DataContext.CardHeight, RelativeSource={RelativeSource AncestorType=ItemsControl}, Mode=OneWay}"
+                                                    Command="{Binding DataContext.SelectBrowserCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                                    CommandParameter="{Binding}"
+                                                    Tag="{Binding}"
+                                                    AllowDrop="True"
+                                                    PreviewMouseLeftButtonDown="BrowserCard_PreviewMouseLeftButtonDown"
+                                                    PreviewMouseMove="BrowserCard_PreviewMouseMove"
+                                                    MouseMove="BrowserCard_Tilt"
+                                                    MouseLeave="BrowserCard_ResetTilt"
+                                                    DragOver="BrowserCard_DragOver"
+                                                    DragEnter="BrowserCard_DragEnter"
+                                                    DragLeave="BrowserCard_DragLeave"
+                                                    Drop="BrowserCard_Drop">
+                                                <Grid>
+                                                    <!-- Content -->
+                                                    <Grid Margin="0,14,0,10">
+                                                        <Grid.RowDefinitions>
+                                                            <RowDefinition Height="*"/>
+                                                            <RowDefinition Height="Auto"/>
+                                                            <RowDefinition Height="Auto"/>
+                                                            <RowDefinition Height="Auto"/>
+                                                        </Grid.RowDefinitions>
+
+                                                        <!-- Browser Icon -->
+                                                        <Border Grid.Row="0" Width="64" Height="64"
+                                                                HorizontalAlignment="Center" VerticalAlignment="Center">
+                                                            <Image Source="{Binding Icon}" Stretch="Uniform"
+                                                                   RenderOptions.BitmapScalingMode="HighQuality"/>
+                                                        </Border>
+
+                                                        <!-- Browser Name -->
+                                                        <TextBlock Grid.Row="1" Text="{Binding DisplayName}"
+                                                                   HorizontalAlignment="Center"
+                                                                   FontFamily="{StaticResource Font.Primary}"
+                                                                   FontSize="13" FontWeight="SemiBold"
+                                                                   Foreground="#EEFFFFFF"
+                                                                   TextTrimming="CharacterEllipsis"
+                                                                   MaxWidth="160" Margin="8,8,8,2"/>
+
+                                                        <!-- Version -->
+                                                        <TextBlock Grid.Row="2"
+                                                                   Text="{Binding ShortVersion, StringFormat='v{0}'}"
+                                                                   HorizontalAlignment="Center"
+                                                                   FontFamily="{StaticResource Font.Primary}"
+                                                                   FontSize="10"
+                                                                   Foreground="#66FFFFFF"
+                                                                   Margin="0,0,0,4"/>
+
+                                                        <!-- Usage Badge -->
+                                                        <Border Grid.Row="3" HorizontalAlignment="Center"
+                                                                CornerRadius="4" Padding="6,2" Margin="0,0,0,2"
+                                                                Visibility="{Binding HasUsage, Converter={StaticResource BoolToVisibility}}">
+                                                            <Border.Background>
+                                                                <SolidColorBrush Color="#0078D4" Opacity="0.25"/>
+                                                            </Border.Background>
+                                                            <TextBlock Text="{Binding UsageLabel}"
+                                                                       FontSize="9" FontFamily="{StaticResource Font.Primary}"
+                                                                       Foreground="#99AADDFF"/>
+                                                        </Border>
+                                                    </Grid>
+
+                                                    <!-- Specular shine — radial highlight that follows the cursor; brush created in code -->
+                                                    <Border Tag="ShineLayer" IsHitTestVisible="False" Opacity="0"/>
+                                                </Grid>
+                                            </Button>
+                                        </Border>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </ScrollViewer>
+
+                        <!-- Remember Checkbox -->
+                        <Border Grid.Row="5" Margin="20,6,20,0" Padding="0,8,0,0"
+                                BorderBrush="#18FFFFFF" BorderThickness="0,1,0,0">
+                            <CheckBox Style="{StaticResource CheckBox.Modern}"
+                                      IsChecked="{Binding RememberChoice}"
+                                      Foreground="#88FFFFFF" FontSize="12">
+                                <TextBlock Text="Remember for this domain"
+                                           FontSize="12" Foreground="#88FFFFFF"/>
+                            </CheckBox>
+                        </Border>
+
+                        <!-- Footer -->
+                        <Border Grid.Row="6" Margin="20,6,20,16">
+                            <Grid>
+                                <TextBlock Text="{Binding Domain, StringFormat='Domain: {0}'}"
+                                           FontFamily="{StaticResource Font.Primary}" FontSize="11"
+                                           Foreground="#66FFFFFF" VerticalAlignment="Center"
+                                           Visibility="{Binding Domain, Converter={StaticResource StringToVisibility}}"/>
+                                <Button Content="Cancel" Style="{StaticResource Button.Secondary}"
+                                        HorizontalAlignment="Right"
+                                        Background="#18FFFFFF" BorderBrush="#22FFFFFF" Foreground="#AAFFFFFF"
+                                        Command="{Binding CancelCommand}"/>
+                            </Grid>
+                        </Border>
+                    </Grid>
+                </Grid>
             </Border>
-        </Border>
-
-        <!-- Section Header -->
-        <Grid Grid.Row="3" Margin="20,0">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="*"/>
-            </Grid.RowDefinitions>
-
-            <Grid Grid.Row="0" Margin="0,0,0,12">
-                <TextBlock Text="Open with..." Style="{StaticResource TextStyle.Subtitle}"
-                           VerticalAlignment="Center"/>
-                <TextBox x:Name="SearchBox" Style="{StaticResource TextBox.Modern}"
-                         Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
-                         Width="180" HorizontalAlignment="Right"
-                         Tag="Search browsers...">
-                    <TextBox.Resources>
-                        <Style TargetType="TextBox" BasedOn="{StaticResource TextBox.Modern}">
-                            <Style.Triggers>
-                                <Trigger Property="Text" Value="">
-                                    <Setter Property="Background">
-                                        <Setter.Value>
-                                            <VisualBrush AlignmentX="Left" AlignmentY="Center" Stretch="None">
-                                                <VisualBrush.Visual>
-                                                    <Label Content="Search browsers..." Padding="10,0"
-                                                           Foreground="{DynamicResource Brush.TextTertiary}"
-                                                           FontFamily="{StaticResource Font.Primary}"
-                                                           FontSize="12"/>
-                                                </VisualBrush.Visual>
-                                            </VisualBrush>
-                                        </Setter.Value>
-                                    </Setter>
-                                </Trigger>
-                            </Style.Triggers>
-                        </Style>
-                    </TextBox.Resources>
-                </TextBox>
-            </Grid>
-
-            <!-- Loading -->
-            <StackPanel Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center"
-                        Visibility="{Binding IsLoading, Converter={StaticResource BoolToVisibility}}">
-                <TextBlock Text="Detecting browsers..." Style="{StaticResource TextStyle.BodySecondary}"
-                           HorizontalAlignment="Center"/>
-            </StackPanel>
-
-            <!-- Browser Grid -->
-            <ScrollViewer Grid.Row="1" Style="{StaticResource ScrollViewer.Modern}"
-                          VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled"
-                          Visibility="{Binding IsLoading, Converter={StaticResource InverseBoolToVisibility}}">
-                <ItemsControl ItemsSource="{Binding FilteredBrowsers}">
-                    <ItemsControl.ItemsPanel>
-                        <ItemsPanelTemplate>
-                            <WrapPanel Orientation="Horizontal" HorizontalAlignment="Center"/>
-                        </ItemsPanelTemplate>
-                    </ItemsControl.ItemsPanel>
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate>
-                            <Button Style="{StaticResource BrowserCardStyle}"
-                                    Command="{Binding DataContext.SelectBrowserCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
-                                    CommandParameter="{Binding}"
-                                    Tag="{Binding}"
-                                    AllowDrop="True"
-                                    PreviewMouseLeftButtonDown="BrowserCard_PreviewMouseLeftButtonDown"
-                                    PreviewMouseMove="BrowserCard_PreviewMouseMove"
-                                    DragOver="BrowserCard_DragOver"
-                                    DragEnter="BrowserCard_DragEnter"
-                                    DragLeave="BrowserCard_DragLeave"
-                                    Drop="BrowserCard_Drop">
-                                <Grid>
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition Height="*"/>
-                                        <RowDefinition Height="Auto"/>
-                                        <RowDefinition Height="Auto"/>
-                                        <RowDefinition Height="Auto"/>
-                                    </Grid.RowDefinitions>
-
-                                    <!-- Browser Icon -->
-                                    <Border Grid.Row="0" Width="52" Height="52" Margin="0,16,0,4"
-                                            HorizontalAlignment="Center" VerticalAlignment="Center">
-                                        <Image Source="{Binding Icon}" Stretch="Uniform"
-                                               RenderOptions.BitmapScalingMode="HighQuality"/>
-                                    </Border>
-
-                                    <!-- Browser Name -->
-                                    <TextBlock Grid.Row="1" Text="{Binding DisplayName}"
-                                               HorizontalAlignment="Center"
-                                               FontFamily="{StaticResource Font.Primary}"
-                                               FontSize="12" FontWeight="SemiBold"
-                                               Foreground="{DynamicResource Brush.TextPrimary}"
-                                               TextTrimming="CharacterEllipsis"
-                                               MaxWidth="130" Margin="8,2"/>
-
-                                    <!-- Version -->
-                                    <TextBlock Grid.Row="2" Text="{Binding ShortVersion, StringFormat='v{0}'}"
-                                               HorizontalAlignment="Center"
-                                               FontFamily="{StaticResource Font.Primary}"
-                                               FontSize="10"
-                                               Foreground="{DynamicResource Brush.TextTertiary}"
-                                               Margin="0,0,0,4"/>
-
-                                    <!-- Usage Badge -->
-                                    <Border Grid.Row="3" HorizontalAlignment="Center"
-                                            CornerRadius="4" Padding="6,2" Margin="0,0,0,8"
-                                            Visibility="{Binding HasUsage, Converter={StaticResource BoolToVisibility}}">
-                                        <Border.Background>
-                                            <SolidColorBrush Color="{DynamicResource Theme.Accent}" Opacity="0.15"/>
-                                        </Border.Background>
-                                        <TextBlock Text="{Binding UsageLabel}"
-                                                   FontSize="9" FontFamily="{StaticResource Font.Primary}"
-                                                   Foreground="{DynamicResource Brush.Accent}"/>
-                                    </Border>
-                                </Grid>
-                            </Button>
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                </ItemsControl>
-            </ScrollViewer>
-        </Grid>
-
-        <!-- Remember Checkbox -->
-        <Border Grid.Row="4" Margin="20,8,20,0" Padding="0,8,0,0"
-                BorderBrush="{DynamicResource Brush.BorderSubtle}" BorderThickness="0,1,0,0">
-            <CheckBox Style="{StaticResource CheckBox.Modern}"
-                      IsChecked="{Binding RememberChoice}"
-                      Foreground="{DynamicResource Brush.TextSecondary}"
-                      FontSize="12">
-                <TextBlock Text="Remember for this domain" FontSize="12"
-                           Foreground="{DynamicResource Brush.TextSecondary}"/>
-            </CheckBox>
-        </Border>
-
-        <!-- Footer -->
-        <Border Grid.Row="5" Margin="20,8,20,16">
-            <Grid>
-                <TextBlock Text="{Binding Domain, StringFormat='Domain: {0}'}"
-                           Style="{StaticResource TextStyle.Caption}"
-                           VerticalAlignment="Center"
-                           Visibility="{Binding Domain, Converter={StaticResource StringToVisibility}}"/>
-                <Button Content="Cancel" Style="{StaticResource Button.Secondary}"
-                        HorizontalAlignment="Right"
-                        Command="{Binding CancelCommand}"/>
-            </Grid>
         </Border>
     </Grid>
 </Window>

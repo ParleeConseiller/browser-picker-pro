@@ -38,7 +38,8 @@ BrowserDetection  Rules        Security
 Pure domain layer. No dependencies on external packages (only abstractions).
 - **Models**: `Browser`, `BrowserProfile`, `BrowserRule`, `AppSettings`, `UrlRequest`, `SecurityResult`
 - **Interfaces**: `IBrowserDetectionService`, `IRulesEngine`, `ISecurityProvider`, `ISettingsService`, `IBrowserLauncher`, `IProtocolRegistrar`
-- **Enums**: `AppTheme`, `RuleType`, `RuleAction`, `SecurityLevel`, `BrowserType`, `NavigationSection`
+- **Enums**: `AppTheme`, `RuleType`, `RuleAction`, `SecurityLevel`, `BrowserType`, `NavigationSection`, `PickerWindowStyle`, `PickerCardLayout`, `PickerBackgroundMode`
+- **`AppSettings` picker properties**: `PickerWindowStyle`, `PickerCardLayout`, `PickerBackgroundMode`, `PickerBackgroundImagePath`, `PickerDarkTintOpacity`, `PickerCardSize`
 
 ### `BrowserPickerPro.BrowserDetection`
 Discovers installed browsers using multiple strategies:
@@ -71,11 +72,11 @@ Cross-cutting concerns and service implementations:
 ### `BrowserPickerPro.UI`
 WPF presentation layer using MVVM:
 - `App.xaml.cs` — builds DI container, routes to picker or dashboard
-- **Windows**: `BrowserPickerWindow` (mode 1), `MainWindow` (mode 2)
+- **Windows**: `BrowserPickerWindow` (mode 1 — glassmorphism, `AllowsTransparency=True`), `MainWindow` (mode 2)
 - **Views** (Pages): `BrowsersView`, `RulesView`, `SecurityView`, `AppearanceView`, `ImportExportView`, `AboutView`, `SetupView`
 - **ViewModels**: One per view, all inherit `ObservableObject` from CommunityToolkit.Mvvm
 - **Helpers**: `MicaHelper` (DWM P/Invoke), `ThemeHelper`, `IconHelper`, `AnimationHelper`
-- **Themes**: Merged resource dictionaries — `Dark.xaml`, `Light.xaml`, `Colors.xaml`, `Typography.xaml`, `Controls.xaml`
+- **Themes**: Merged resource dictionaries — `Dark.xaml`, `Light.xaml`, `Colors.xaml`, `Typography.xaml`, `Controls.xaml` (includes `ScrollBar.Minimal` and `ScrollViewer.Modern`)
 
 ---
 
@@ -139,4 +140,4 @@ MainWindow → NavigationService → ContentFrame (Page navigation)
 
 ---
 
-*© 2025 Parlee Conseiller, Inc.*
+*© 2026 Parlee Conseiller, Inc.*

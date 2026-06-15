@@ -32,6 +32,10 @@ public partial class BrowserPickerViewModel : ObservableObject
     public ObservableCollection<BrowserItemViewModel> Browsers { get; } = new();
     public ObservableCollection<BrowserItemViewModel> FilteredBrowsers { get; } = new();
 
+    public AppSettings? Settings { get; private set; }
+    public int CardWidth => Settings?.PickerCardSize ?? 190;
+    public int CardHeight => (Settings?.PickerCardSize ?? 190) + 24;
+
     public event Action<Browser?, BrowserProfile?>? BrowserSelected;
     public event Action? Cancelled;
 
@@ -54,6 +58,7 @@ public partial class BrowserPickerViewModel : ObservableObject
     {
         _request = request;
         _settings = settings;
+        Settings = settings;
         DisplayUrl = request.Url.Length > 80 ? request.Url[..77] + "..." : request.Url;
         Domain = request.Domain ?? string.Empty;
 
@@ -75,6 +80,7 @@ public partial class BrowserPickerViewModel : ObservableObject
         }
 
         IsLoading = false;
+        TriggerEntranceAnimations();
 
         if (settings.EnableSecurityCheck && (request.IsUrl || request.Domain != null))
             await RunSecurityCheckAsync(request.Url);
@@ -111,6 +117,20 @@ public partial class BrowserPickerViewModel : ObservableObject
 
     [RelayCommand]
     private void Cancel() => Cancelled?.Invoke();
+
+    private void TriggerEntranceAnimations()
+    {
+        for (int i = 0; i < FilteredBrowsers.Count; i++)
+        {
+            var index = i;
+            var item = FilteredBrowsers[i];
+            Task.Run(async () =>
+            {
+                await Task.Delay(80 + index * 65);
+                System.Windows.Application.Current.Dispatcher.Invoke(() => item.IsEntranceVisible = true);
+            });
+        }
+    }
 
     public void MoveItem(BrowserItemViewModel source, BrowserItemViewModel target)
     {
@@ -173,6 +193,7 @@ public partial class BrowserItemViewModel : ObservableObject
     public Browser Browser { get; }
 
     [ObservableProperty] private bool _isHovered;
+    [ObservableProperty] private bool _isEntranceVisible;
     [ObservableProperty] private BrowserProfile? _selectedProfile;
 
     public string DisplayName => Browser.DisplayName.IsNullOrEmpty() ? Browser.Name : Browser.DisplayName;

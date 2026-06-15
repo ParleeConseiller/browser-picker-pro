@@ -7,6 +7,30 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.1.0] — 2026-06-14
+
+### Added
+- **Glassmorphism picker window** — Complete redesign of `BrowserPickerWindow`. `AllowsTransparency="True"`, dark gradient background with radial accent glow, top glass-highlight line, and a semi-transparent glass tint overlay. Cards use `#18FFFFFF` background with gradient border.
+- **Drag-to-reorder browser cards** — Cards in the picker can be reordered by dragging. Order is persisted across sessions via `OrderIndex`. Implemented with native WPF `DragDrop` (no third-party library); target card dims to 45% opacity on `DragEnter`.
+- **Staggered entrance animations** — Browser cards animate in one by one (opacity 0→1, Y-translate 28→0, CubicEase 380ms) with a per-card delay of 80ms + 65ms × index.
+- **Premium 3D card hover effect** — On hover: 1.08 scale, ±14° skew tilt tracking the cursor, −5 px Y lift, enlarged `DropShadowEffect` (created in code, not XAML). A specular shine `RadialGradientBrush` (created in code) follows the cursor position across the card surface, simulating a moving light reflection. On `MouseLeave`: `ElasticEase` (Oscillations=2, Springiness=5) spring-back over 480ms — card bounces through neutral before settling.
+- **Customizable picker settings** (all in Settings → Appearance → Picker Window Style):
+  - *Window mode*: Modal (floating, shadow, corner radius) or Fullscreen overlay
+  - *Card layout*: WrapGrid or Single Row (horizontal scroll)
+  - *Background*: Dark gradient (default) or Custom file (image, GIF, MP4, WebM — videos loop automatically)
+  - *Dark tint slider*: 0–90% overlay opacity
+  - *Card size slider*: 140–260 px
+- **Custom scrollbar** (`ScrollViewer.Modern` + `ScrollBar.Minimal`) — 8 px pill-shaped thumb, no arrows, fully transparent track, replaces the default Windows scrollbar in the picker.
+
+### Technical
+- New enums in `Core/Enums/AppEnums.cs`: `PickerWindowStyle`, `PickerCardLayout`, `PickerBackgroundMode`
+- Six new properties on `AppSettings` for picker configuration
+- `BrowserPickerViewModel` exposes `CardWidth`/`CardHeight` for data-bound card sizing
+- `BrowserItemViewModel` gains `IsEntranceVisible` for staggered animation triggering
+- All card transforms and effects created in code-behind to avoid WPF DataTemplate `Freezable` freeze (see `EnsureTiltTransform`, `EnsureShadow`, `FindShineLayer`)
+
+---
+
 ## [1.0.1] — 2026-06-12
 
 ### Fixed

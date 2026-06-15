@@ -12,3 +12,7 @@ public enum SecurityLevel { Unknown, Safe, Suspicious, Dangerous }
 public enum BrowserType { Chrome, Firefox, Edge, Brave, Vivaldi, Opera, OperaGX, Waterfox, LibreWolf, Zen, Floorp, Arc, Chromium, Unknown }
 
 public enum NavigationSection { Browsers, Rules, Security, Profiles, Appearance, ImportExport, About }
+
+public enum PickerWindowStyle { Modal, Fullscreen }
+public enum PickerCardLayout { WrapGrid, SingleRow }
+public enum PickerBackgroundMode { DarkGradient, CustomFile }
