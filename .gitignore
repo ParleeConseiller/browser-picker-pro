@@ -80,3 +80,7 @@ installer/BrowserPickerPro.Installer/obj/
 
 # User-specific app data
 %APPDATA%\BrowserPickerPro\
+
+# --- added by security audit patch (2026-07-08) ---
+node_modules/
+.wrangler/
