@@ -28,7 +28,7 @@ Entries from v1.0.1/v1.1 were back-filled from `CHANGELOG.md` / `CLAUDE.md`.
 - [External] **NativeAOT publish: `'vswhere.exe' is not recognized` (MSB3073)** — Symptom: launcher publish fails at the link step. Root cause: the ILCompiler targets call `vswhere.exe` by name, and the VS Installer folder isn't on PATH. Workaround: `build.ps1` prepends `%ProgramFiles(x86)%\Microsoft Visual Studio\Installer`. File: `scripts/build.ps1`.
 - [External] **Windows PowerShell 5.1 has no 3-argument `Join-Path`** — Symptom: `build.ps1 -Publish` failed under `powershell.exe`. Fix: nested `Join-Path`. File: `scripts/build.ps1`.
 - [External] **PowerShell passes `$null` as `""` to a `string` P/Invoke parameter** — Symptom: `FindWindowW($null, title)` never found the picker. Fix: `[NullString]::Value`. File: `scripts/measure-picker-latency.ps1`.
-- [Internal] **CI targeted .NET 9 for a .NET 10 solution** — Symptom: workflows could not build. Fix: `setup-dotnet` uses `global-json-file: global.json`. File: `.github/workflows/*.yml`.
+- [Internal] **CI targeted .NET 9 for a .NET 10 solution** — Symptom: none visible yet — runs passed only because the windows-latest image already ships a .NET 10 SDK; a runner image change would have broken CI. Fix: `setup-dotnet` uses `global-json-file: global.json`. File: `.github/workflows/*.yml`.
 
 ## 2026-06-12 → 06-14 (v1.0.1 / v1.1) — back-filled
 

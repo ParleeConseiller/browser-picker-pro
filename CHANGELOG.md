@@ -38,7 +38,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - Protocol registration points `shell\open\command` at the launcher when it is deployed; an existing registration is refreshed automatically on startup. Installer (`Product.wxs`) ships the launcher and registers it.
-- CI workflows used .NET 9 while the solution targets .NET 10 — now use `global.json`. Release workflow publishes the launcher too.
+- CI workflows set up .NET 9 while the solution targets .NET 10 (they only built because the runner image happens to ship a .NET 10 SDK) — now use `global.json`. Release workflow publishes the launcher too.
 - `build.ps1 -Publish` also publishes the launcher, stops only instances running from the output folder (by PID), and works on Windows PowerShell 5.1.
 - Removed redundant `Microsoft.Win32.Registry` / `System.Text.Json` package references (NU1510) — build is now warning-free.
 - Product version 1.0.0 → 2.0.0 in `Directory.Build.props` (it lagged behind the changelog).
