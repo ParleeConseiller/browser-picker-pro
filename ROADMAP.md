@@ -1,3 +1,12 @@
+<!--
+  File: ROADMAP.md
+  Description: Planned and delivered milestones of Browser Picker Pro.
+  Author: Jose-Jorge HERNANDEZ
+  Company: Parlee Conseiller, Inc.
+  Date: 2026-06-12
+  Last edit date: 2026-11-25
+  Version: 1.1.0
+-->
 # Roadmap — Browser Picker Pro
 
 *Created by Parlee Conseiller, Inc.*
@@ -31,14 +40,22 @@
 
 ---
 
-## v1.2 — Polish & Performance
+## v2.0 — Instant Picker ✅ (2026-11-25)
 
-- [ ] System tray icon with quick actions
+- [x] System tray icon with quick actions (Settings, Refresh browsers, Start with Windows, Exit)
+- [x] Resident app + NativeAOT launcher: click → picker in ~50–80 ms (target was <300 ms)
+- [x] Opening animations (circle reveal, zoom & focus, spring rise, CRT power-on, random) with preview
+- [x] Start with Windows
+- [x] "Remember for this domain" actually saves a rule
+- [x] Installer ships the launcher (WiX source updated; MSI build not yet automated)
+
+## v2.1 — Polish
+
 - [ ] Global hotkey to open picker manually
 - [ ] Recent URLs history in picker
 - [ ] Browser profiles shown as sub-cards in picker
-- [ ] Startup performance improvements (<300ms target)
-- [ ] Installer (WiX or Inno Setup)
+- [ ] Opening animation for the configuration dashboard
+- [ ] Build the MSI in the release workflow
 
 ## v1.3 — Power User Features
 

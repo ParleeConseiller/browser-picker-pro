@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<!--
+  File: operations_guide.html
+  Description: Operations guide for the BrowserPickerPro.Launcher module (the NativeAOT link
+               handler). Self-contained, prints cleanly to PDF/Word.
+  Author: Jose-Jorge HERNANDEZ
+  Company: Parlee Conseiller, Inc.
+  Date: 2026-11-25
+  Last edit date: 2026-11-25
+  Version: 1.0.0
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Launcher — Operations Guide</title>
+<style>
+  :root { --ink:#1b2330; --muted:#5a6575; --line:#d9dee6; --bg:#fff; --panel:#f5f7fa; --accent:#0078d4;
+          --code:#eef1f5; --font:"Segoe UI",system-ui,Roboto,Arial,sans-serif; --mono:Consolas,"Courier New",monospace;
+          --gap:16px; --max:880px; }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--bg); color:var(--ink); font:16px/1.55 var(--font); }
+  main { max-width:var(--max); margin:0 auto; padding:24px var(--gap) 40px; }
+  header { border-bottom:3px solid var(--accent); padding-bottom:10px; }
+  h1 { font-size:1.6rem; margin:0 0 4px; } h2 { font-size:1.2rem; margin:28px 0 8px; }
+  .meta, footer { color:var(--muted); font-size:.9rem; }
+  code, pre { font-family:var(--mono); font-size:.88rem; background:var(--code); border-radius:4px; }
+  code { padding:1px 5px; } pre { padding:12px; overflow-x:auto; }
+  .table-wrap { overflow-x:auto; }
+  table { border-collapse:collapse; width:100%; min-width:480px; font-size:.93rem; }
+  th, td { border:1px solid var(--line); padding:8px 10px; text-align:left; vertical-align:top; }
+  th { background:var(--panel); }
+  footer { margin-top:36px; border-top:1px solid var(--line); padding-top:10px; }
+  @media print { main { max-width:none; padding:0; } pre, table { break-inside:avoid; } }
+</style>
+</head>
+<body>
+<main>
+<header>
+  <h1>BrowserPickerProLauncher.exe — Operations Guide</h1>
+  <div class="meta">Module of Browser Picker Pro 2.0.0 · Author: Jose-Jorge HERNANDEZ · Parlee Conseiller, Inc.</div>
+</header>
+
+<h2>System description</h2>
+<p>A ~2&nbsp;MB native program that Windows runs for every link. It hands the link to the resident Browser Picker Pro tray app over a per-user named pipe and exits within milliseconds; if the tray app isn't running, it starts <code>BrowserPickerPro.exe</code> with the link.</p>
+
+<h2>Prerequisites</h2>
+<ul>
+  <li>Must sit in the <strong>same folder</strong> as <code>BrowserPickerPro.exe</code>.</li>
+  <li>Windows 10/11 x64. No runtime, no admin rights.</li>
+</ul>
+
+<h2>Start, stop, verify</h2>
+<p>It is never started by hand and never stays running — each run lasts a few milliseconds. Verify that Windows uses it:</p>
+<pre>(Get-ItemProperty 'HKCU:\SOFTWARE\Classes\BrowserPickerProHTML\shell\open\command').'(default)'
+# expected: "…\BrowserPickerProLauncher.exe" "%1"</pre>
+<p>Manual test: <code>BrowserPickerProLauncher.exe https://example.com</code> → the picker appears.</p>
+
+<h2>Logs and monitoring</h2>
+<p>The launcher writes no log of its own (to stay fast). Its effect is logged by the tray app in <code>%LOCALAPPDATA%\BrowserPickerPro\Logs\</code>: <code>Picker first frame N ms after link click</code> uses the launcher's start time.</p>
+<div class="table-wrap"><table>
+  <tr><th>Exit code</th><th>Meaning</th></tr>
+  <tr><td>0</td><td>Link handed to the tray app, or the app was started.</td></tr>
+  <tr><td>2</td><td><code>BrowserPickerPro.exe</code> not found next to the launcher.</td></tr>
+  <tr><td>3</td><td>Starting <code>BrowserPickerPro.exe</code> failed.</td></tr>
+</table></div>
+
+<h2>Configuration parameters</h2>
+<p>None. Names are derived from the Windows user and session: mutex <code>Local\BrowserPickerPro.Resident.&lt;user&gt;</code>, pipe <code>BrowserPickerPro.Picker.&lt;user&gt;.&lt;session&gt;</code> (current-user only). Hand-off timeout: 3&nbsp;s, then cold start.</p>
+
+<h2>Common troubleshooting</h2>
+<div class="table-wrap"><table>
+  <tr><th>Symptom</th><th>Fix</th></tr>
+  <tr><td>Every link takes ~1.5&nbsp;s</td><td>The tray app isn't running; enable Start with Windows.</td></tr>
+  <tr><td>Nothing happens on a link</td><td>Check exit code 2: copy <code>BrowserPickerPro.exe</code> next to the launcher.</td></tr>
+  <tr><td>Build: <code>'vswhere.exe' is not recognized</code> (MSB3073)</td><td>Build with <code>scripts\build.ps1 -Publish</code>; needs VS “Desktop development with C++”.</td></tr>
+</table></div>
+
+<footer>Author: Jose-Jorge HERNANDEZ · Parlee Conseiller, Inc.</footer>
+</main>
+</body>
+</html>

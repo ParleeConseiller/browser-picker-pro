@@ -1,5 +1,15 @@
 // Browser Picker Pro — Created by Parlee Conseiller, Inc.
+// File: ProtocolRegistrarService.cs
+// Description: Registers Browser Picker Pro (HKCU only) as a handler for http/https/ftp
+//              links and .html/.htm/.url files. Since v2.0 the "open" command points at
+//              the tiny NativeAOT launcher when it sits next to the main exe.
+// Author: Jose-Jorge HERNANDEZ
+// Company: Parlee Conseiller, Inc.
+// Date: 2026-06-12
+// Last edit date: 2026-11-25
+// Version: 1.1.0
 using BrowserPickerPro.Core.Interfaces;
+using BrowserPickerPro.Core.Ipc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Win32;
 
@@ -49,8 +59,18 @@ public class ProtocolRegistrarService : IProtocolRegistrar
         using var defaultIconKey = progIdKey.CreateSubKey("DefaultIcon");
         defaultIconKey.SetValue(null, $"\"{exePath}\",0");
 
+        // Links go to the launcher (≈1 MB native exe, no .NET boot) when it is deployed;
+        // it hands the URL to the resident tray app over a pipe in a few milliseconds.
         using var openWithKey = progIdKey.CreateSubKey(@"shell\open\command");
-        openWithKey.SetValue(null, $"\"{exePath}\" \"%1\"");
+        openWithKey.SetValue(null, $"\"{ResolveHandlerPath(exePath)}\" \"%1\"");
+    }
+
+    /// <summary>The launcher next to the main exe if present, otherwise the main exe itself.</summary>
+    public static string ResolveHandlerPath(string mainExePath)
+    {
+        var dir = Path.GetDirectoryName(mainExePath) ?? AppContext.BaseDirectory;
+        var launcher = Path.Combine(dir, IpcProtocol.LauncherExecutableName);
+        return File.Exists(launcher) ? launcher : mainExePath;
     }
 
     private static void RegisterCapabilities(string exePath)

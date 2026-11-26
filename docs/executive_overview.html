@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<!--
+  File: executive_overview.html
+  Description: One-page, non-technical executive overview of Browser Picker Pro 2.0 with a
+               visual flow (CSS boxes and arrows). Self-contained, prints cleanly to PDF/Word.
+  Author: Jose-Jorge HERNANDEZ
+  Company: Parlee Conseiller, Inc.
+  Date: 2026-11-25
+  Last edit date: 2026-11-25
+  Version: 1.0.0
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Browser Picker Pro — Executive Overview</title>
+<style>
+  :root {
+    --ink: #17202c; --muted: #5d6877; --bg: #ffffff; --panel: #f4f7fb; --line: #dde3ea;
+    --accent: #0078d4; --accent-soft: #e5f1fb; --good: #1f8a4c;
+    --font: "Segoe UI", system-ui, -apple-system, Roboto, Arial, sans-serif;
+    --gap: 16px; --radius: 12px; --max: 940px;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font: 17px/1.6 var(--font); }
+  main { max-width: var(--max); margin: 0 auto; padding: 28px var(--gap) 48px; }
+  h1 { font-size: 2rem; margin: 0; }
+  .tag { color: var(--muted); margin: 4px 0 28px; }
+  h2 { font-size: 1.3rem; margin: 32px 0 10px; color: var(--accent); }
+  .flow { display: flex; flex-wrap: wrap; align-items: stretch; gap: 10px; }
+  .step { flex: 1 1 150px; background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius);
+          padding: 14px; text-align: center; }
+  .step b { display: block; margin-bottom: 4px; }
+  .step small { color: var(--muted); }
+  .arrow { flex: 0 0 auto; align-self: center; font-size: 1.6rem; color: var(--accent); }
+  .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--gap); }
+  .card { background: var(--accent-soft); border-radius: var(--radius); padding: 16px; }
+  .card b { display: block; }
+  .big { font-size: 2rem; font-weight: 700; color: var(--good); line-height: 1.2; }
+  footer { margin-top: 40px; border-top: 1px solid var(--line); padding-top: 12px; color: var(--muted); font-size: .9rem; }
+  @media (max-width: 600px) {
+    .arrow { transform: rotate(90deg); width: 100%; text-align: center; }
+  }
+  @media print {
+    main { max-width: none; padding: 0; }
+    .flow, .cards { break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+<main>
+  <h1>Browser Picker Pro</h1>
+  <p class="tag">Executive overview · Version 2.0 · November 2026 · Author: Jose-Jorge HERNANDEZ · Parlee Conseiller, Inc.</p>
+
+  <h2>The problem</h2>
+  <p>Many people keep work, personal and client accounts in different web browsers. Windows opens every link in a single default browser, so people constantly copy links by hand into the right one — or end up signed in to the wrong account.</p>
+
+  <h2>What it does</h2>
+  <p>When you click a link anywhere, a polished picker appears with one card per browser. One click opens the link in the right browser and account. Sites you always open the same way can be remembered, so the picker never interrupts you for them again.</p>
+
+  <h2>How it works</h2>
+  <div class="flow" role="list">
+    <div class="step" role="listitem"><b>1. You click a link</b><small>in email, chat, documents…</small></div>
+    <div class="arrow" aria-hidden="true">➜</div>
+    <div class="step" role="listitem"><b>2. A tiny helper</b><small>passes it on in milliseconds</small></div>
+    <div class="arrow" aria-hidden="true">➜</div>
+    <div class="step" role="listitem"><b>3. The picker appears</b><small>animated, already loaded</small></div>
+    <div class="arrow" aria-hidden="true">➜</div>
+    <div class="step" role="listitem"><b>4. You choose</b><small>or a saved rule chooses for you</small></div>
+    <div class="arrow" aria-hidden="true">➜</div>
+    <div class="step" role="listitem"><b>5. Right browser opens</b><small>picker returns to the tray</small></div>
+  </div>
+
+  <h2>What's new in 2.0</h2>
+  <div class="cards">
+    <div class="card"><span class="big">~20× faster</span><b>Instant picker</b>From about 1.5 seconds down to well under a tenth of a second.</div>
+    <div class="card"><span class="big">Always ready</span><b>Lives in the tray</b>Starts with Windows and waits quietly until a link is clicked.</div>
+    <div class="card"><span class="big">Eye-catching</span><b>Opening animations</b>Choose from several cinematic entrances over your own background video.</div>
+    <div class="card"><span class="big">Safer</span><b>Hardened links</b>Specially crafted links can no longer smuggle commands into a browser.</div>
+  </div>
+
+  <h2>Key benefits</h2>
+  <ul>
+    <li>No more copying links between browsers — fewer mistakes with the wrong account.</li>
+    <li>Feels instant, so people actually keep using it.</li>
+    <li>No administrator rights or IT installation needed; works per user.</li>
+    <li>Optional safety checks against known malicious websites.</li>
+  </ul>
+
+  <footer>Author: Jose-Jorge HERNANDEZ · Parlee Conseiller, Inc.</footer>
+</main>
+</body>
+</html>

@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<!--
+  File: executive_overview.html
+  Description: Non-technical overview of the Browser Picker Pro launcher module and why it
+               makes the picker feel instant. Self-contained, prints cleanly to PDF/Word.
+  Author: Jose-Jorge HERNANDEZ
+  Company: Parlee Conseiller, Inc.
+  Date: 2026-11-25
+  Last edit date: 2026-11-25
+  Version: 1.0.0
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Launcher — Executive Overview</title>
+<style>
+  :root { --ink:#17202c; --muted:#5d6877; --bg:#fff; --panel:#f4f7fb; --line:#dde3ea; --accent:#0078d4;
+          --font:"Segoe UI",system-ui,Roboto,Arial,sans-serif; --gap:16px; --radius:12px; --max:900px; }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--bg); color:var(--ink); font:17px/1.6 var(--font); }
+  main { max-width:var(--max); margin:0 auto; padding:28px var(--gap) 44px; }
+  h1 { font-size:1.8rem; margin:0; } h2 { font-size:1.25rem; margin:28px 0 10px; color:var(--accent); }
+  .tag, footer { color:var(--muted); }
+  .flow { display:flex; flex-wrap:wrap; gap:10px; align-items:stretch; }
+  .step { flex:1 1 170px; background:var(--panel); border:1px solid var(--line); border-radius:var(--radius); padding:14px; text-align:center; }
+  .step b { display:block; } .step small { color:var(--muted); }
+  .arrow { align-self:center; font-size:1.6rem; color:var(--accent); }
+  footer { margin-top:36px; border-top:1px solid var(--line); padding-top:10px; font-size:.9rem; }
+  @media (max-width:600px) { .arrow { transform:rotate(90deg); width:100%; text-align:center; } }
+  @media print { main { max-width:none; padding:0; } .flow { break-inside:avoid; } }
+</style>
+</head>
+<body>
+<main>
+  <h1>The Browser Picker Pro launcher</h1>
+  <p class="tag">Executive overview · Module of version 2.0 · Author: Jose-Jorge HERNANDEZ · Parlee Conseiller, Inc.</p>
+
+  <h2>What problem it solves</h2>
+  <p>The main Browser Picker Pro program is large. Starting it fresh for every link made people wait about a second and a half each time. The launcher is a tiny messenger that removes that wait.</p>
+
+  <h2>How it works</h2>
+  <div class="flow">
+    <div class="step"><b>You click a link</b><small>Windows calls the launcher</small></div>
+    <div class="arrow" aria-hidden="true">➜</div>
+    <div class="step"><b>Launcher passes it on</b><small>to the app already waiting in the tray</small></div>
+    <div class="arrow" aria-hidden="true">➜</div>
+    <div class="step"><b>Picker appears</b><small>in well under a tenth of a second</small></div>
+  </div>
+
+  <h2>Key benefits</h2>
+  <ul>
+    <li>The picker feels instant — about twenty times faster than before.</li>
+    <li>Uses no memory between clicks: it runs only for a few thousandths of a second.</li>
+    <li>If the main app isn't running yet, the launcher simply starts it — nothing breaks.</li>
+  </ul>
+
+  <footer>Author: Jose-Jorge HERNANDEZ · Parlee Conseiller, Inc.</footer>
+</main>
+</body>
+</html>

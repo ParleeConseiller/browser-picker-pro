@@ -1,3 +1,12 @@
+<!--
+  File: CLAUDE.md
+  Description: Project context, commands, conventions and known gotchas for Claude Code sessions.
+  Author: Jose-Jorge HERNANDEZ
+  Company: Parlee Conseiller, Inc.
+  Date: 2026-06-12
+  Last edit date: 2026-11-25
+  Version: 2.0.0
+-->
 # CLAUDE.md — Browser Picker Pro
 
 > This file is for Claude Code. It provides project context, build commands, conventions, and known gotchas to avoid repeating past debugging work.
@@ -8,7 +17,7 @@
 
 ## Project in one sentence
 
-Browser Picker Pro is a Windows WPF app that intercepts HTTP/HTTPS/HTML links and shows a floating browser-selection UI. It has two modes: a browser picker (launched with a URL argument) and a configuration dashboard (launched with no arguments).
+Browser Picker Pro is a Windows WPF app that intercepts HTTP/HTTPS/HTML links and shows a floating browser-selection UI. Since v2.0 it runs as a **single resident tray app**: Windows runs the tiny NativeAOT `BrowserPickerProLauncher.exe` for each link, which forwards the URL over a named pipe; the resident app reveals a pre-warmed picker in ~50–80 ms and hides it back to the tray after the pick. With no arguments it opens the configuration dashboard. `KeepRunningInTray=false` restores the v1 one-shot mode. See `ARCHITECTURE.md` → "Runtime model".
 
 ---
 
@@ -31,7 +40,8 @@ Browser Picker Pro is a Windows WPF app that intercepts HTTP/HTTPS/HTML links an
 ```
 browser-picker-pro/
 ├── src/
-│   ├── BrowserPickerPro.Core/           # Interfaces, models, enums — zero NuGet deps
+│   ├── BrowserPickerPro.Launcher/       # NativeAOT link handler (module.md); links Core/Ipc/IpcProtocol.cs
+│   ├── BrowserPickerPro.Core/           # Interfaces, models, enums, Ipc/IpcProtocol — zero NuGet deps
 │   ├── BrowserPickerPro.BrowserDetection/  # Finds installed browsers via filesystem + registry
 │   ├── BrowserPickerPro.Rules/          # Domain/wildcard/regex rule matching
 │   ├── BrowserPickerPro.Security/       # VirusTotal + Google Safe Browsing providers
@@ -43,7 +53,11 @@ browser-picker-pro/
 │       ├── Themes/                      # Dark.xaml, Light.xaml, Colors.xaml, Typography.xaml, Controls.xaml
 │       ├── Helpers/                     # MicaHelper, ThemeHelper, AnimationHelper, IconHelper
 │       ├── Converters/                  # All IValueConverter implementations
-│       └── Services/                    # ThemeService, NavigationService, DialogService
+│       └── Services/                    # ThemeService, NavigationService, DialogService,
+│                                        # IpcServer, PickerHost, TrayHost (v2.0)
+├── technical_memory/technical_memory.ipynb  # WHY decisions were made — append on every notable decision
+├── artifacts/                           # analysis notebooks (picker_latency.ipynb)
+├── docs/BUGS.md                         # authoritative gotcha log
 ├── tests/
 │   ├── BrowserPickerPro.UnitTests/
 │   └── BrowserPickerPro.IntegrationTests/
@@ -74,17 +88,17 @@ dotnet run --project src/BrowserPickerPro.UI
 # Simulate URL interception
 dotnet run --project src/BrowserPickerPro.UI -- "https://example.com"
 
-# Publish self-contained single-file EXE → publish/win-x64/BrowserPickerPro.exe
-dotnet publish src/BrowserPickerPro.UI/BrowserPickerPro.UI.csproj `
-    -c Release -r win-x64 --self-contained true `
-    -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true `
-    -o publish/win-x64
+# Publish app (single file) + NativeAOT launcher → publish/win-x64/
+.\scripts\build.ps1 -Publish
+
+# Start the resident app silently, then measure click → picker latency
+.\publish\win-x64\BrowserPickerPro.exe --tray
+.\scripts\measure-picker-latency.ps1 -Exe .\publish\win-x64\BrowserPickerProLauncher.exe -Runs 10
 ```
 
-Before republishing, ensure no running BrowserPickerPro.exe instance is locking the file:
-```powershell
-Stop-Process -Name BrowserPickerPro -Force -ErrorAction SilentlyContinue
-```
+`build.ps1 -Publish` stops only the processes running **from the output folder, by PID**. Never `Stop-Process -Name BrowserPickerPro` — the user may run other copies. The launcher publish needs the VS "Desktop development with C++" workload; the script puts `vswhere.exe` on PATH (NativeAOT fails with MSB3073 otherwise).
+
+Resident-mode timing is logged at Debug level: `Reveal timing: launcher→host … settings+rules … prepare … show …` and `Picker first frame N ms after link click`.
 
 ---
 
@@ -145,6 +159,24 @@ After `BeginAnimation` is called with `FillBehavior=HoldEnd` (the default), the 
 A `DropShadowEffect` with `x:Name="MyShadow"` inside a `ControlTemplate` throws `MC4111: Cannot find trigger target 'MyShadow'` at build time when referenced as `TargetName` in a `Trigger.Setter`. Effects cannot be trigger targets this way. Solutions:
 - Create the `DropShadowEffect` in code-behind (avoids all freezing and targeting issues)
 - Or use `Trigger.Setter` on the parent element's `Effect` property directly (replaces the whole effect object)
+
+### 10. Template-local frozen transform + trigger at instantiation → render-loop crash
+A storyboard path like `(UIElement.RenderTransform).(TranslateTransform.Y)` throws `Cannot animate '(0).(1)' on an immutable object instance` when the transform is a template property element and the DataTrigger fires *while the template is instantiated* (item created with `IsEntranceVisible=true`). Keep the transform in a **Style setter** (WPF clones it) and always create cards hidden.
+
+### 11. Never `.GetResult()` an async method on the UI thread
+`IsRegisteredAsync().GetAwaiter().GetResult()` deadlocked the resident app on startup — the continuation needs the blocked UI thread. Await it.
+
+### 12. Don't swallow every `DispatcherUnhandledException`
+A layout/render exception recurs every frame; `Handled=true` forever produced a 1 GB log. `App` lets the process die after >5 errors in 10 s. Serilog is capped at 10 MB/file.
+
+### 13. Resident picker is parked, not hidden
+`BrowserPickerWindow` stays shown at (-32000,-32000), content opacity 0, as a tool window (`NativeMethods.MakeToolWindow`). Use `IsRevealed`, **not** `IsVisible`, to know whether the user sees it. `Show()` on this layered window costs ~55 ms — that's why.
+
+### 14. Foreground and efficiency mode
+The launcher must call `AllowSetForegroundWindow(ASFW_ANY)` before writing to the pipe, or the picker opens behind other windows. `TaskbarIcon.ForceCreate(enablesEfficiencyMode: false)` — the default puts the whole process in Windows 11 Efficiency mode.
+
+### 15. Per-link work must be idempotent and cheap
+`ApplySettings` runs on every link: it only touches the window style / `ItemsPanel` / background when they **changed** (replacing `ItemsPanel` or `Clear()`+`Add()` on `FilteredBrowsers` regenerates every card).
 
 ---
 
@@ -314,7 +346,15 @@ These are exposed in `AppearanceViewModel` and edited in `Views/AppearanceView.x
 
 ---
 
-## Known working state (as of 2026-06-14)
+## Known working state (as of 2026-11-25, v2.0.0)
+
+- **Build**: 0 warnings, 0 errors. **Tests**: 73 unit + 3 integration passing
+- **Resident mode** verified on this machine: pre-warm OK, launcher → picker first frame ~50–80 ms (v1.1: ~1.5 s), picker takes the foreground, Esc parks it and returns focus, second `BrowserPickerPro.exe` forwards and exits, cold start via launcher ~1.4 s
+- **Opening animations** checked visually: CircleReveal, ZoomBlur, SpringRise, PowerOn settle centred with the video background playing
+- **Not yet verified hands-on**: picking a browser from the resident picker (launch + hide), the "Remember for this domain" rule end-to-end, the tray menu items, Fullscreen mode reveal, mixed-DPI multi-monitor placement
+- Live registration on this machine points at `publish\win-x64\BrowserPickerProLauncher.exe`; HKCU Run key starts `publish\win-x64\BrowserPickerPro.exe --tray`
+
+## Previous known working state (as of 2026-06-14)
 
 - **Build**: 0 errors, informational NU1510 / CS8604 warnings only (pre-existing, safe to ignore)
 - **Tests**: 47/47 passing

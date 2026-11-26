@@ -1,0 +1,38 @@
+<!--
+  File: BrowserPickerPro.Launcher.csproj
+  Description: Tiny NativeAOT link handler. Windows runs it for every http/https link;
+               it forwards the URL to the resident tray app over a named pipe and exits,
+               or cold-starts BrowserPickerPro.exe when no resident instance exists.
+  Author: Jose-Jorge HERNANDEZ
+  Company: Parlee Conseiller, Inc.
+  Date: 2026-11-25
+  Last edit date: 2026-11-25
+  Version: 1.0.0
+-->
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <!-- WinExe: no console window flashes when Windows starts us for a link. -->
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <AssemblyName>BrowserPickerProLauncher</AssemblyName>
+    <RootNamespace>BrowserPickerPro.Launcher</RootNamespace>
+    <ApplicationIcon>..\..\assets\icon.ico</ApplicationIcon>
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+
+    <!-- Native code: starts in a few ms, no .NET runtime boot or single-file extraction. -->
+    <PublishAot>true</PublishAot>
+    <!-- Size/speed trims that are safe for a process that only touches a pipe and a mutex. -->
+    <InvariantGlobalization>true</InvariantGlobalization>
+    <UseSystemResourceKeys>true</UseSystemResourceKeys>
+    <OptimizationPreference>Speed</OptimizationPreference>
+    <StackTraceSupport>false</StackTraceSupport>
+    <IsAotCompatible>true</IsAotCompatible>
+    <!-- Required by the LibraryImport source generator (AllowSetForegroundWindow). -->
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- Shared wire protocol, compiled in directly (no Core reference keeps the binary tiny). -->
+    <Compile Include="..\BrowserPickerPro.Core\Ipc\IpcProtocol.cs" Link="Ipc\IpcProtocol.cs" />
+  </ItemGroup>
+</Project>

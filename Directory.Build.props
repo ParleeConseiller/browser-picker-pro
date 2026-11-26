@@ -1,11 +1,20 @@
+<!--
+  File: Directory.Build.props
+  Description: Shared MSBuild properties (product metadata, version, language settings) for every project.
+  Author: Jose-Jorge HERNANDEZ
+  Company: Parlee Conseiller, Inc.
+  Date: 2026-06-12
+  Last edit date: 2026-11-25
+  Version: 1.0.3
+-->
 <Project>
   <PropertyGroup>
     <Company>Parlee Conseiller, Inc.</Company>
     <Copyright>© 2025 Parlee Conseiller, Inc. All rights reserved.</Copyright>
     <Product>Browser Picker Pro</Product>
-    <Version>1.0.0</Version>
-    <AssemblyVersion>1.0.0.0</AssemblyVersion>
-    <FileVersion>1.0.0.0</FileVersion>
+    <Version>2.0.0</Version>
+    <AssemblyVersion>2.0.0.0</AssemblyVersion>
+    <FileVersion>2.0.0.0</FileVersion>
     <Authors>Jose-Jorge HERNANDEZ</Authors>
     <Description>Browser Picker Pro — Choose the right browser every time.</Description>
     <RepositoryType>git</RepositoryType>

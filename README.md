@@ -1,6 +1,17 @@
+<!--
+  File: README.md
+  Description: Project overview, features, quick start and usage of Browser Picker Pro.
+  Author: Jose-Jorge HERNANDEZ
+  Company: Parlee Conseiller, Inc.
+  Date: 2026-06-12
+  Last edit date: 2026-11-25
+  Version: 2.0.0
+-->
 # Browser Picker Pro
 
 > **Choose the right browser every time.**
+
+**Version 2.0.0**
 
 A modern, beautiful Windows application that intercepts web links and lets you choose which browser to open them in — with rules, profiles, and optional security checks.
 
@@ -19,6 +30,10 @@ A modern, beautiful Windows application that intercepts web links and lets you c
 
 ## Features
 
+- **Instant, always-on picker (v2.0)** — Stays in the tray with the picker window and its video background warm in memory. A link opens the picker in about 50–80 ms (v1: about 1.5 s); picking a browser or pressing Esc hides it back to the tray. A tiny native launcher (`BrowserPickerProLauncher.exe`, about 2 MB) is what Windows runs for each link.
+- **Opening animations (v2.0)** — Circle reveal from the cursor (glowing ring), zoom and focus, spring rise, CRT power-on, or a different one every time — with a live **Preview** in Settings → Appearance
+- **Start with Windows (v2.0)** — Optional, so even the first link of the day opens instantly
+- **Remember for this domain** — The picker checkbox now really saves a rule (v1 ignored it)
 - **Beautiful Browser Picker** — Glassmorphism floating window with staggered entrance animations, 3D card hover effects (scale, tilt, specular shine, spring-back), and an `ElasticEase` snap-back
 - **Fully Customizable Picker** — Choose Modal or Fullscreen, WrapGrid or Single Row, dark gradient or custom image/video background, adjustable dark tint and card size — all in Settings
 - **Drag-to-Reorder** — Drag browser cards in the picker to set your preferred order; order is persisted
@@ -62,18 +77,23 @@ Requires [.NET 10 SDK](https://dotnet.microsoft.com/download/dotnet/10.0).
 
 ### Browser Selection Mode
 
-When any application opens a web link, Browser Picker Pro appears with a card for each installed browser. Click a card to open the URL in that browser.
+When any application opens a web link, Browser Picker Pro appears (centred on the monitor you are working on) with a card for each installed browser. Click a card to open the URL in that browser.
 
 - **Single click** — Select and open
 - **Enter key** — Open in selected browser
-- **Escape** — Cancel and use system default
+- **Escape** — Cancel; the picker hides back to the tray and the focus returns to the app you came from
+
+### Tray
+
+The app runs in the notification area. Right-click the icon for **Settings…**, **Refresh browsers**, **Start with Windows** and **Exit**; double-click opens Settings. To get the old one-process-per-link behaviour, turn off **Settings → Appearance → Keep running in the tray**.
 
 ### Configuration Dashboard
 
-Run without arguments to open the full dashboard:
+Run without arguments (or double-click the tray icon) to open the full dashboard:
 
 ```
-BrowserPickerPro.exe
+BrowserPickerPro.exe            # opens Settings (starts the tray app if needed)
+BrowserPickerPro.exe --tray     # start silently in the tray
 ```
 
 ---
@@ -121,7 +141,8 @@ Both require free API keys. See [API_INTEGRATIONS.md](docs/API_INTEGRATIONS.md).
 ```
 BrowserPickerPro/
 ├── src/
-│   ├── BrowserPickerPro.UI/           # WPF application, views, viewmodels
+│   ├── BrowserPickerPro.Launcher/     # NativeAOT link handler → forwards to the tray app
+│   ├── BrowserPickerPro.UI/           # WPF application, views, viewmodels, tray host
 │   ├── BrowserPickerPro.Core/         # Domain models, interfaces, enums
 │   ├── BrowserPickerPro.Infrastructure/  # Settings, DI, logging
 │   ├── BrowserPickerPro.BrowserDetection/ # Browser discovery engine
@@ -130,10 +151,14 @@ BrowserPickerPro/
 ├── tests/
 │   ├── BrowserPickerPro.UnitTests/
 │   └── BrowserPickerPro.IntegrationTests/
-├── docs/
-├── scripts/
+├── docs/                          # Guides, BUGS.md, operations_guide.html, executive_overview.html
+├── artifacts/                     # Analysis notebooks (e.g. picker latency v1 vs v2)
+├── technical_memory/              # Decision log (why things are built the way they are)
+├── scripts/                       # build.ps1, measure-picker-latency.ps1
 └── installer/
 ```
+
+Building the launcher needs the Visual Studio **Desktop development with C++** workload (NativeAOT links with MSVC); `scripts\build.ps1 -Publish` handles the rest.
 
 ---
 

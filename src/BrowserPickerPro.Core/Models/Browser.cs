@@ -1,5 +1,14 @@
 // Browser Picker Pro — Created by Parlee Conseiller, Inc.
+// File: Browser.cs
+// Description: A browser known to the app (detected or user-added) with its profiles,
+//              usage statistics and picker ordering.
+// Author: Jose-Jorge HERNANDEZ
+// Company: Parlee Conseiller, Inc.
+// Date: 2026-06-12
+// Last edit date: 2026-11-25
+// Version: 1.1.0
 using BrowserPickerPro.Core.Enums;
+using BrowserPickerPro.Core.Extensions;
 using System.Text.Json.Serialization;
 
 namespace BrowserPickerPro.Core.Models;
@@ -24,10 +33,10 @@ public class Browser
     [JsonIgnore]
     public bool IsInstalled => File.Exists(ExecutablePath);
 
+    /// <summary>
+    /// Command-line arguments that open <paramref name="url"/> in this browser, with the
+    /// URL sanitized against argument injection. Empty string when the URL is rejected.
+    /// </summary>
     public string GetLaunchArgs(string url, BrowserProfile? profile = null)
-    {
-        if (profile != null && !string.IsNullOrWhiteSpace(profile.ProfileArgument))
-            return $"{profile.ProfileArgument} \"{url}\"";
-        return $"\"{url}\"";
-    }
+        => UrlArgumentSanitizer.BuildArguments(url, profile?.ProfileArgument) ?? string.Empty;
 }

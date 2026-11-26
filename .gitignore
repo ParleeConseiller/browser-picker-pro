@@ -11,12 +11,11 @@
 *.sln.docstates
 .vs/
 _Outputs/
-Artifacts/
+# NOTE: no 'artifacts/' entry - /artifacts holds the project's analysis notebooks and must be tracked.
 
 # .NET specific
 project.lock.json
 project.fragment.lock.json
-artifacts/
 **/Properties/launchSettings.json
 
 # NuGet
@@ -84,3 +83,9 @@ installer/BrowserPickerPro.Installer/obj/
 # --- added by security audit patch (2026-07-08) ---
 node_modules/
 .wrangler/
+
+# --- v2.0 (2026-11-25) ---
+# NativeAOT launcher debug symbols (9 MB) - never shipped
+*.pdb
+# Local backups folder (git history is this repo's backup)
+/backups/

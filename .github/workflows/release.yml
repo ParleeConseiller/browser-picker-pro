@@ -18,7 +18,8 @@ jobs:
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: '9.0.x'
+        # Use the SDK pinned in global.json (the solution targets .NET 10).
+        global-json-file: global.json
 
     - name: Get version from tag
       id: get_version
@@ -41,8 +42,20 @@ jobs:
         --runtime win-x64
         --self-contained true
         -p:PublishSingleFile=true
+        -p:IncludeNativeLibrariesForSelfExtract=true
         -p:Version=${{ steps.get_version.outputs.VERSION }}
         --output ./publish/win-x64
+
+    # Tiny NativeAOT link handler (needs MSVC link.exe, present on windows-latest).
+    - name: Publish NativeAOT launcher
+      shell: pwsh
+      run: |
+        $env:PATH = "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer;$env:PATH"
+        dotnet publish src/BrowserPickerPro.Launcher/BrowserPickerPro.Launcher.csproj `
+          --configuration Release --runtime win-x64 `
+          -p:Version=${{ steps.get_version.outputs.VERSION }} `
+          --output ./publish/win-x64
+        Remove-Item ./publish/win-x64/*.pdb -ErrorAction SilentlyContinue
 
     - name: Zip artifact
       run: Compress-Archive -Path ./publish/win-x64/* -DestinationPath ./publish/BrowserPickerPro-${{ steps.get_version.outputs.VERSION }}-win-x64.zip
@@ -59,8 +72,9 @@ jobs:
 
           ### Installation
           1. Download the ZIP below
-          2. Extract and run `BrowserPickerPro.exe`
+          2. Extract both files (`BrowserPickerPro.exe` + `BrowserPickerProLauncher.exe`) into the same folder and run `BrowserPickerPro.exe`
           3. Follow the Windows Setup wizard to register as default browser
+          4. The app stays in the tray so the picker opens instantly
 
           **Created by Parlee Conseiller, Inc.**
         files: ./publish/BrowserPickerPro-${{ steps.get_version.outputs.VERSION }}-win-x64.zip

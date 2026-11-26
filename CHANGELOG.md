@@ -1,9 +1,47 @@
+<!--
+  File: CHANGELOG.md
+  Description: Release history of Browser Picker Pro (Keep a Changelog format).
+  Author: Jose-Jorge HERNANDEZ
+  Company: Parlee Conseiller, Inc.
+  Date: 2026-06-12
+  Last edit date: 2026-11-25
+  Version: 2.0.0
+-->
 # Changelog
 
 All notable changes to Browser Picker Pro will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+---
+
+## [2.0.0] — 2026-11-25
+
+### Added
+- **Resident tray mode** — Browser Picker Pro now stays running in the notification area (H.NotifyIcon.Wpf 2.4.1). The picker window, its view model and the background video are created once, pre-warmed, and reused for every link. After a pick (or Esc) the picker hides back to the tray instead of exiting. Tray menu: Settings…, Refresh browsers, Start with Windows, Exit.
+- **`BrowserPickerProLauncher.exe`** (new project `src/BrowserPickerPro.Launcher`, NativeAOT, ~1.9 MB) — the registered link handler. It hands the URL to the resident app over a per-user named pipe (`IpcProtocol`) and exits in a few milliseconds; with no resident instance it cold-starts `BrowserPickerPro.exe`. Measured click → picker first frame: **~50–80 ms** (v1.1: ~1.5 s). See `artifacts/picker_latency.ipynb`.
+- **Opening animations** (`PickerRevealAnimator`, setting `PickerOpenAnimation`): Circle reveal from the cursor with a glowing ring (default), Zoom & focus, Spring rise, CRT power-on, Surprise me (random), None. Smooth exit animation on hide. Respects "Smooth animations" and Windows' reduced-motion setting. **Preview picker** button in Settings → Appearance.
+- **Start with Windows** (`IStartupRegistrar`, HKCU Run key with `--tray`) and **Keep running in the tray** settings; the latter set to off keeps the v1 one-shot behaviour.
+- Picker opens centred on the monitor under the cursor (per-monitor DPI aware) and gives the focus back to the previous app on cancel.
+- `scripts/measure-picker-latency.ps1` — repeatable click-to-screen latency measurement.
+- Single-instance handling: a second `BrowserPickerPro.exe` forwards its URL to the resident instance and exits.
+- `technical_memory/technical_memory.ipynb`, `docs/BUGS.md`, `docs/operations_guide.html`, `docs/executive_overview.html`, `.assetignore`.
+
+### Fixed
+- **"Remember for this domain" did nothing** — the checkbox had an empty placeholder. It now saves a priority-50 domain rule (`RememberChoiceRules`) that wins over the rule that showed the picker.
+- **Command-line injection through crafted URLs** — a URL containing `"` could break out of its quotes and add browser switches (e.g. `--renderer-cmd-prefix`). URLs are now sanitized (`UrlArgumentSanitizer`): quotes percent-encoded, control characters removed, trailing backslashes doubled, switch-like values rejected.
+- **Profile ids changed on every detection**, so rules targeting a profile broke. `BrowserListMerger` keeps existing profile ids; rule-matched launches now also honour the rule's profile (v1 ignored it).
+- **Closing the dashboard left an invisible process running** (legacy mode, `ShutdownMode=OnExplicitShutdown`).
+- Browser detection (disk + registry scan) no longer runs on every link; it runs once in the background and after the dashboard closes.
+- Serilog file size capped at 10 MB per file (default was 1 GB).
+
+### Changed
+- Protocol registration points `shell\open\command` at the launcher when it is deployed; an existing registration is refreshed automatically on startup. Installer (`Product.wxs`) ships the launcher and registers it.
+- CI workflows used .NET 9 while the solution targets .NET 10 — now use `global.json`. Release workflow publishes the launcher too.
+- `build.ps1 -Publish` also publishes the launcher, stops only instances running from the output folder (by PID), and works on Windows PowerShell 5.1.
+- Removed redundant `Microsoft.Win32.Registry` / `System.Text.Json` package references (NU1510) — build is now warning-free.
+- Product version 1.0.0 → 2.0.0 in `Directory.Build.props` (it lagged behind the changelog).
 
 ---
 

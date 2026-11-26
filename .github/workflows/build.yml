@@ -16,7 +16,8 @@ jobs:
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: '9.0.x'
+        # Use the SDK pinned in global.json (the solution targets .NET 10).
+        global-json-file: global.json
 
     - name: Restore dependencies
       run: dotnet restore BrowserPickerPro.sln

@@ -3,11 +3,20 @@
     Browser Picker Pro Installer
     Created by Parlee Conseiller, Inc.
     Built with WiX Toolset v4
+
+    File: Product.wxs
+    Description: Per-user MSI: installs the app + the NativeAOT link launcher and registers
+                 the launcher as the http/https/ftp/.html handler (HKCU only).
+    Author: Jose-Jorge HERNANDEZ
+    Company: Parlee Conseiller, Inc.
+    Date: 2026-06-12
+    Last edit date: 2026-11-25
+    Version: 1.1.0
 -->
 <Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
     <Package Name="Browser Picker Pro"
              Manufacturer="Parlee Conseiller, Inc."
-             Version="1.0.0"
+             Version="2.0.0"
              UpgradeCode="B4A7C3D1-E9F2-4A56-8B3C-D1E2F3A4B5C6"
              Scope="perUser">
 
@@ -60,7 +69,15 @@
                           Advertise="no"/>
                 <RemoveFolder Id="CleanupStartMenu" Directory="ApplicationProgramsFolder" On="uninstall"/>
                 <RegistryValue Root="HKCU" Key="Software\BrowserPickerPro\Installed"
-                               Name="Version" Type="string" Value="1.0.0" KeyPath="no"/>
+                               Name="Version" Type="string" Value="2.0.0" KeyPath="no"/>
+            </Component>
+            <!-- v2.0: ~2 MB native exe registered as the link handler; forwards links to the
+                 resident tray app in a few milliseconds. -->
+            <Component Id="LauncherExecutable" Guid="C7D2E4F1-3A5B-4C6D-8E9F-0A1B2C3D4E5F">
+                <File Id="BrowserPickerProLauncherExe"
+                      Source="..\..\publish\win-x64\BrowserPickerProLauncher.exe"
+                      Name="BrowserPickerProLauncher.exe"
+                      KeyPath="yes"/>
             </Component>
         </ComponentGroup>
 
@@ -74,7 +91,7 @@
                     <RegistryValue Name="(Default)" Type="string" Value="[INSTALLFOLDER]BrowserPickerPro.exe,0"/>
                 </RegistryKey>
                 <RegistryKey Root="HKCU" Key="SOFTWARE\Classes\BrowserPickerProHTML\shell\open\command">
-                    <RegistryValue Name="(Default)" Type="string" Value='"[INSTALLFOLDER]BrowserPickerPro.exe" "%1"'/>
+                    <RegistryValue Name="(Default)" Type="string" Value='"[INSTALLFOLDER]BrowserPickerProLauncher.exe" "%1"'/>
                 </RegistryKey>
                 <RegistryKey Root="HKCU" Key="SOFTWARE\BrowserPickerPro\Capabilities">
                     <RegistryValue Name="ApplicationDescription" Type="string" Value="Choose the right browser every time."/>

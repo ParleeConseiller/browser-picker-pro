@@ -1,0 +1,32 @@
+# File: .assetignore
+# Description: Paths asset tooling must skip (not bundled, optimised or scanned).
+#              Browser Picker Pro has no asset pipeline yet; this file documents intent
+#              and is what any future asset/packaging step must read first.
+# Author: Jose-Jorge HERNANDEZ
+# Company: Parlee Conseiller, Inc.
+# Date: 2026-11-25
+# Last edit date: 2026-11-25
+# Version: 1.0.0
+
+# Build output: produced from source, never an input asset
+bin/
+obj/
+# Published executables (147 MB single-file app + launcher) - release outputs, not assets
+publish/
+# Native debug symbols - large and not shipped
+*.pdb
+# Analysis notebooks and the decision log - documentation, not app assets
+artifacts/
+technical_memory/
+# Docs (including the HTML guides) - not bundled into the app
+docs/
+# Installer sources - consumed by WiX, not by asset tooling
+installer/
+# Test projects and their results
+tests/
+TestResults/
+# Local backups, temp files and IDE state
+backups/
+tmp/
+.vs/
+.idea/

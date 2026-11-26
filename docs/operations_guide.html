@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<!--
+  File: operations_guide.html
+  Description: Operations & maintenance guide for Browser Picker Pro 2.0 (resident tray app
+               + NativeAOT launcher): prerequisites, start/stop/status, logs, configuration,
+               troubleshooting. Self-contained, prints cleanly to PDF/Word.
+  Author: Jose-Jorge HERNANDEZ
+  Company: Parlee Conseiller, Inc.
+  Date: 2026-11-25
+  Last edit date: 2026-11-25
+  Version: 1.0.0
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Browser Picker Pro — Operations Guide</title>
+<style>
+  :root {
+    --ink: #1b2330; --muted: #5a6575; --line: #d9dee6; --bg: #ffffff; --panel: #f5f7fa;
+    --accent: #0078d4; --warn: #b35c00; --code-bg: #eef1f5;
+    --font: "Segoe UI", system-ui, -apple-system, Roboto, Arial, sans-serif;
+    --mono: "Cascadia Mono", Consolas, "Courier New", monospace;
+    --gap: 16px; --radius: 8px; --max: 920px;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.55 var(--font); }
+  main { max-width: var(--max); margin: 0 auto; padding: 24px var(--gap) 48px; }
+  header { border-bottom: 3px solid var(--accent); padding-bottom: 12px; margin-bottom: 24px; }
+  h1 { font-size: 1.8rem; margin: 0 0 4px; }
+  h2 { font-size: 1.3rem; margin: 32px 0 8px; border-bottom: 1px solid var(--line); padding-bottom: 4px; }
+  h3 { font-size: 1.05rem; margin: 20px 0 6px; }
+  .meta { color: var(--muted); font-size: .9rem; }
+  code, pre { font-family: var(--mono); font-size: .88rem; background: var(--code-bg); border-radius: 4px; }
+  code { padding: 1px 5px; }
+  pre { padding: 12px; overflow-x: auto; white-space: pre; }
+  .table-wrap { overflow-x: auto; }
+  table { border-collapse: collapse; width: 100%; min-width: 520px; font-size: .93rem; }
+  th, td { border: 1px solid var(--line); padding: 8px 10px; text-align: left; vertical-align: top; }
+  th { background: var(--panel); }
+  .note { background: var(--panel); border-left: 4px solid var(--accent); padding: 10px 14px; border-radius: var(--radius); }
+  .warn { border-left-color: var(--warn); }
+  footer { margin-top: 40px; border-top: 1px solid var(--line); padding-top: 12px; color: var(--muted); font-size: .9rem; }
+  @media print {
+    main { max-width: none; padding: 0; }
+    pre, table, .note { break-inside: avoid; }
+    a { color: inherit; text-decoration: none; }
+  }
+</style>
+</head>
+<body>
+<main>
+<header>
+  <h1>Browser Picker Pro — Operations &amp; Maintenance Guide</h1>
+  <div class="meta">Version 2.0.0 · 2026-11-25 · Author: Jose-Jorge HERNANDEZ · Parlee Conseiller, Inc.</div>
+</header>
+
+<h2>1. System description</h2>
+<p>Browser Picker Pro intercepts web links on Windows and lets the user choose which browser (and profile) opens them, with rules that route known sites automatically. Version 2.0 is built from two executables in the same folder:</p>
+<div class="table-wrap"><table>
+  <tr><th>Component</th><th>What it does</th></tr>
+  <tr><td><code>BrowserPickerProLauncher.exe</code> (~2&nbsp;MB, native)</td><td>Registered as the link handler. Forwards each link to the running app over a per-user named pipe and exits within milliseconds. Starts the main app if it isn't running.</td></tr>
+  <tr><td><code>BrowserPickerPro.exe</code> (~147&nbsp;MB, self-contained .NET 10 WPF)</td><td>Runs resident in the notification area (tray). Keeps the picker window and its video background warm, shows the picker (~50–80&nbsp;ms after the click), launches the chosen browser, then hides back to the tray. Also hosts the Settings dashboard.</td></tr>
+</table></div>
+
+<h2>2. Prerequisites</h2>
+<ul>
+  <li>Windows 10 21H2 or Windows 11, x64. No administrator rights (everything is per-user, <code>HKCU</code>).</li>
+  <li>No .NET runtime needed on the machine (self-contained).</li>
+  <li>To <em>build</em>: .NET SDK 10.0.300 (<code>global.json</code>) and Visual Studio with the <strong>Desktop development with C++</strong> workload (the launcher is compiled with NativeAOT).</li>
+</ul>
+
+<h2>3. Start, stop and verify status</h2>
+<h3>Start</h3>
+<pre>BrowserPickerPro.exe --tray      # silent start in the tray (what "Start with Windows" uses)
+BrowserPickerPro.exe             # start (if needed) and open Settings</pre>
+<p>Clicking any link also starts it automatically if it isn't running (first open is then ~1.5&nbsp;s instead of ~0.05&nbsp;s).</p>
+<h3>Stop</h3>
+<p>Right-click the tray icon → <strong>Exit</strong>. To stop it from a script, stop the exact process by its id — never every process with that name:</p>
+<pre>Get-Process BrowserPickerPro | Where-Object Path -eq 'C:\path\to\BrowserPickerPro.exe' |
+    ForEach-Object { Stop-Process -Id $_.Id }</pre>
+<h3>Verify</h3>
+<ul>
+  <li>The tray icon tooltip reads “Browser Picker Pro — ready”.</li>
+  <li>The log contains <code>Picker pre-warmed and resident</code> after start.</li>
+  <li>The link handler points at the launcher:
+<pre>(Get-ItemProperty 'HKCU:\SOFTWARE\Classes\BrowserPickerProHTML\shell\open\command').'(default)'</pre></li>
+  <li>Latency check (from a source checkout): <code>.\scripts\measure-picker-latency.ps1 -Exe &lt;folder&gt;\BrowserPickerProLauncher.exe -Runs 10</code></li>
+</ul>
+
+<h2>4. Log files and monitoring</h2>
+<div class="table-wrap"><table>
+  <tr><th>What</th><th>Where</th></tr>
+  <tr><td>Application log (daily, 7 kept, 10&nbsp;MB/file max)</td><td><code>%LOCALAPPDATA%\BrowserPickerPro\Logs\browserPickerPro-YYYYMMDD.log</code></td></tr>
+  <tr><td>Crash details (.NET runtime)</td><td>Windows Event Log → Application, event id 1026</td></tr>
+</table></div>
+<p>Useful log lines:</p>
+<ul>
+  <li><code>Picker first frame N ms after link click</code> — end-to-end latency for each link.</li>
+  <li><code>Reveal timing: launcher→host … settings+rules … prepare … show …</code> (Debug) — where the time goes.</li>
+  <li><code>Rule matched: …</code> — a rule routed the link without showing the picker.</li>
+  <li><code>Repeated UI exceptions — exiting instead of looping</code> — the app stopped itself after an error burst; the next link restarts it.</li>
+</ul>
+<pre>Get-Content "$env:LOCALAPPDATA\BrowserPickerPro\Logs\browserPickerPro-$(Get-Date -f yyyyMMdd).log" -Tail 30 -Wait</pre>
+
+<h2>5. Configuration parameters</h2>
+<p>Stored in <code>%APPDATA%\BrowserPickerPro\</code>: <code>settings.json</code>, <code>browsers.json</code>, rules file. Edit through Settings; the resident app re-reads <code>settings.json</code> on every link.</p>
+<div class="table-wrap"><table>
+  <tr><th>Setting</th><th>Default</th><th>Effect</th></tr>
+  <tr><td><code>KeepRunningInTray</code></td><td>true</td><td>Resident tray mode. false = v1 behaviour (one process per link). Applies on next start.</td></tr>
+  <tr><td><code>StartWithWindows</code></td><td>true</td><td>Writes <code>HKCU\…\CurrentVersion\Run\BrowserPickerPro</code> = <code>"…\BrowserPickerPro.exe" --tray</code>.</td></tr>
+  <tr><td><code>PickerOpenAnimation</code></td><td>CircleReveal</td><td>None, CircleReveal, ZoomBlur, SpringRise, PowerOn, Random.</td></tr>
+  <tr><td><code>EnableAnimations</code></td><td>true</td><td>Off = no opening/closing animation (also off when Windows “Animation effects” is off).</td></tr>
+  <tr><td><code>PickerWindowStyle</code> / <code>PickerCardLayout</code></td><td>Modal / WrapGrid</td><td>Floating or fullscreen; wrapping grid or single row.</td></tr>
+  <tr><td><code>PickerBackgroundMode</code> / <code>PickerBackgroundImagePath</code></td><td>DarkGradient / –</td><td>Custom image or video (mp4, webm, wmv, mov, mkv, avi, gif); videos loop muted.</td></tr>
+  <tr><td><code>PickerDarkTintOpacity</code>, <code>PickerCardSize</code></td><td>0.55, 190</td><td>Readability tint over the background; card size in px.</td></tr>
+</table></div>
+
+<h2>6. Common troubleshooting</h2>
+<div class="table-wrap"><table>
+  <tr><th>Symptom</th><th>Cause</th><th>Fix</th></tr>
+  <tr><td>Picker takes over a second</td><td>App wasn't running (cold start).</td><td>Enable Start with Windows, or start <code>--tray</code> once.</td></tr>
+  <tr><td>Picker opens behind other windows</td><td>Links aren't going through the launcher.</td><td>Keep both exes together; restart the tray app (it refreshes an existing registration).</td></tr>
+  <tr><td>Links open in Edge, picker never shows</td><td>Not the Windows default browser.</td><td>Settings → Windows Setup → Register, then pick Browser Picker Pro in Windows Default Apps.</td></tr>
+  <tr><td>Rebuild fails “file in use”</td><td>Resident instance runs from the publish folder.</td><td><code>scripts\build.ps1 -Publish</code> stops exactly those PIDs.</td></tr>
+  <tr><td>Launcher build: <code>'vswhere.exe' is not recognized</code></td><td>VS Installer folder not on PATH.</td><td>Use <code>scripts\build.ps1</code>, which adds it.</td></tr>
+  <tr><td>Background video missing</td><td>File moved, or codec not installed.</td><td>Re-pick it in Settings → Appearance; prefer H.264 MP4.</td></tr>
+</table></div>
+<p class="note warn">Uninstalling: Exit from the tray, unregister in Settings → Windows Setup, turn off Start with Windows, then delete the folder.</p>
+
+<footer>Author: Jose-Jorge HERNANDEZ · Parlee Conseiller, Inc. · Browser Picker Pro 2.0.0</footer>
+</main>
+</body>
+</html>

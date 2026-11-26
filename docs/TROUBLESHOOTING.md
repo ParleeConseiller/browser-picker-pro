@@ -1,3 +1,12 @@
+<!--
+  File: TROUBLESHOOTING.md
+  Description: Common problems with Browser Picker Pro and how to fix them.
+  Author: Jose-Jorge HERNANDEZ
+  Company: Parlee Conseiller, Inc.
+  Date: 2026-06-12
+  Last edit date: 2026-11-25
+  Version: 1.1.0
+-->
 # Troubleshooting — Browser Picker Pro
 
 *Created by Parlee Conseiller, Inc.*
@@ -73,3 +82,28 @@ Logs are written to:
 ```
 
 Rolling daily, kept for 7 days.
+
+---
+
+## v2.0 tray mode
+
+### The picker opens slowly (more than a second)
+**Cause:** no resident instance — the launcher had to cold-start the full app (once per sign-in, or after **Exit** from the tray).
+**Fix:** turn on **Settings → Appearance → Start with Windows**, or start it once with `BrowserPickerPro.exe --tray`. Check the log for `Picker first frame … ms after link click` (normally ~50–80 ms).
+
+### Links still open the old way / `BrowserPickerProLauncher.exe` is not used
+**Cause:** the handler registration still points at `BrowserPickerPro.exe`.
+**Fix:** keep both exes in the same folder and restart the tray app — an existing registration is refreshed on startup. Check with:
+```powershell
+(Get-ItemProperty 'HKCU:\SOFTWARE\Classes\BrowserPickerProHTML\shell\open\command').'(default)'
+```
+
+### The picker opens behind other windows
+**Cause:** Windows' foreground lock; the launcher normally passes the foreground right on.
+**Fix:** make sure links go through `BrowserPickerProLauncher.exe` (see above).
+
+### I want the old behaviour (no tray icon)
+Turn off **Settings → Appearance → Keep running in the tray**, then **Exit** from the tray menu. Start with Windows is disabled with it.
+
+### Publishing fails with "file in use"
+A resident instance running from `publish\win-x64` locks the exe. `scripts\build.ps1 -Publish` stops exactly those processes (by PID). Never stop every `BrowserPickerPro` process by name.

@@ -1,4 +1,12 @@
 // Browser Picker Pro — Created by Parlee Conseiller, Inc.
+// File: AppSettings.cs
+// Description: User settings persisted to %APPDATA%\BrowserPickerPro\settings.json
+//              (theme, picker appearance, tray/startup behaviour, security providers).
+// Author: Jose-Jorge HERNANDEZ
+// Company: Parlee Conseiller, Inc.
+// Date: 2026-06-12
+// Last edit date: 2026-11-25
+// Version: 1.1.0
 using BrowserPickerPro.Core.Enums;
 
 namespace BrowserPickerPro.Core.Models;
@@ -29,6 +37,20 @@ public class AppSettings
     public string? PickerBackgroundImagePath { get; set; }
     public double PickerDarkTintOpacity { get; set; } = 0.55;
     public int PickerCardSize { get; set; } = 190;
+
+    /// <summary>Entrance animation of the picker window.</summary>
+    public PickerOpenAnimation PickerOpenAnimation { get; set; } = PickerOpenAnimation.CircleReveal;
+
+    // Resident (tray) mode — v2.0
+    /// <summary>
+    /// Stay resident in the tray after a pick so the next picker opens instantly.
+    /// false = legacy v1 behaviour (one process per link, exit after the pick).
+    /// Takes effect on the next start.
+    /// </summary>
+    public bool KeepRunningInTray { get; set; } = true;
+
+    /// <summary>Start the resident app (with --tray) when the user signs in to Windows.</summary>
+    public bool StartWithWindows { get; set; } = true;
 }
 
 public class SecuritySettings
