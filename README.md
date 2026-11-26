@@ -4,14 +4,14 @@
   Author: Jose-Jorge HERNANDEZ
   Company: Parlee Conseiller, Inc.
   Date: 2026-06-12
-  Last edit date: 2026-11-25
-  Version: 2.0.0
+  Last edit date: 2026-11-26
+  Version: 2.0.1
 -->
 # Browser Picker Pro
 
 > **Choose the right browser every time.**
 
-**Version 2.0.0**
+**Version 2.1.0**
 
 A modern, beautiful Windows application that intercepts web links and lets you choose which browser to open them in — with rules, profiles, and optional security checks.
 

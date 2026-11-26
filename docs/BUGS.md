@@ -5,13 +5,19 @@
   Author: Jose-Jorge HERNANDEZ
   Company: Parlee Conseiller, Inc.
   Date: 2026-11-25
-  Last edit date: 2026-11-25
-  Version: 1.0.0
+  Last edit date: 2026-11-26
+  Version: 1.1.0
 -->
 # Bugs & gotchas — Browser Picker Pro
 
 Format: `[Internal|External] **Title** — Symptom. Root cause. Fix (or workaround). File.`
 Entries from v1.0.1/v1.1 were back-filled from `CHANGELOG.md` / `CLAUDE.md`.
+
+## 2026-11-26 (v2.1)
+
+- [Internal] **Elevated resident app silently swallowed every link** — Symptom: with Browser Picker Pro as the default browser, clicking a link or opening an .html file did nothing at all: no picker, no log line, no crash, every exit code 0. Links tested from an admin shell worked fine. Root cause: the resident app was started from an elevated shell (High integrity). Medium-integrity callers can't open the pipe of a High-integrity server, so `TrySend` failed. The launcher then cold-started `BrowserPickerPro.exe`, which found the mutex, failed to forward the URL the same way, and called `Shutdown()` without logging. Fix: `Elevation.TryRelaunchUnelevated` makes an elevated start relaunch itself through the desktop Explorer and exit. A second instance that can't reach the resident app now shows a one-shot picker and logs a warning. File: `src/BrowserPickerPro.UI/Helpers/Elevation.cs`, `src/BrowserPickerPro.UI/App.xaml.cs`.
+- [External] **`CreateProcess` + `PROC_THREAD_ATTRIBUTE_PARENT_PROCESS` (Explorer as parent) fails with ERROR_ELEVATION_REQUIRED (740)** — Symptom: the well-known "spoof Explorer as parent" de-elevation trick was refused from an elevated process on Windows 11 26200, even for an `asInvoker` exe with no compatibility shim. Root cause: Windows behavior, not documented. Workaround: start the process through the desktop's own Explorer instead (Raymond Chen's `IShellWindows.FindWindowSW` → `IShellView.GetItemObject` → `IShellDispatch2.ShellExecute`). File: `src/BrowserPickerPro.UI/Helpers/Elevation.cs`.
+- [External] **Log file shows 0 bytes while the app is writing to it** — Symptom: `Get-ChildItem` / Explorer listed today's log as 0 bytes, which looked like "logging is broken". Root cause: NTFS only updates a directory entry's size lazily for a file that is still open. Workaround: read the file (`Get-Content`) or call `Get-Item` on it directly; don't trust the listing. File: n/a (diagnostics).
 
 ## 2026-11-25 (v2.0)
 

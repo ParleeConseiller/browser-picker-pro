@@ -4,8 +4,8 @@
   Author: Jose-Jorge HERNANDEZ
   Company: Parlee Conseiller, Inc.
   Date: 2026-06-12
-  Last edit date: 2026-11-25
-  Version: 2.0.0
+  Last edit date: 2026-11-26
+  Version: 2.1.0
 -->
 # Changelog
 
@@ -13,6 +13,18 @@ All notable changes to Browser Picker Pro will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+---
+
+## [2.1.0] — 2026-11-26
+
+### Fixed
+- **Links and .html files did nothing at all when Browser Picker Pro was the default browser.** The resident tray app had been started from an elevated (administrator) shell, so it ran at High integrity. Links come from normal Medium-integrity apps (Explorer, Discord, mail…), and their launcher can't open an elevated process's named pipe. The launcher fell back to starting `BrowserPickerPro.exe`, which found the resident mutex, failed to forward the URL just as silently, and exited with code 0. Result: no picker, no log line, no crash report.
+  - The app now **never runs elevated**: started elevated, it relaunches itself at the normal integrity level through the desktop's Explorer (`IShellDispatch2.ShellExecute` on the desktop shell view) and exits. When UAC is off (Explorer elevated too) it stays put and logs a warning instead of looping.
+  - **No more silent drops**: if a second instance can't reach the resident app, it now shows a one-shot picker itself and logs a warning.
+
+### Added
+- `src/BrowserPickerPro.UI/Helpers/Elevation.cs` — elevation check and the unelevated relaunch.
 
 ---
 

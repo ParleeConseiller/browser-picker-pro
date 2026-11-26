@@ -7,8 +7,8 @@
 // Author: Jose-Jorge HERNANDEZ
 // Company: Parlee Conseiller, Inc.
 // Date: 2026-06-12
-// Last edit date: 2026-11-25
-// Version: 2.0.0
+// Last edit date: 2026-11-26
+// Version: 2.1.0
 using System.Diagnostics;
 using System.IO;
 using BrowserPickerPro.Core.Interfaces;
@@ -56,29 +56,57 @@ public partial class App : Application
         var started = Stopwatch.GetTimestamp();
         var args = StartupArgs.Parse(e.Args);
 
+        // 0) Never become the resident (or one-shot) instance while elevated. Links come
+        //    from non-elevated apps; their launcher can't open an elevated process's pipe or
+        //    mutex, so every link was silently dropped (2026-11-26: the app had been started
+        //    from an admin shell). Relaunch at the normal integrity level and get out.
+        //    An elevated *forwarder* is fine (high → medium works), hence the resident check.
+        string? deElevationFailure = null;
+        if (!IpcProtocol.IsResidentRunning() && Elevation.IsCurrentProcessElevated())
+        {
+            if (Environment.ProcessPath is { } exe && Elevation.TryRelaunchUnelevated(exe, e.Args, out deElevationFailure))
+            {
+                Shutdown();
+                return;
+            }
+            // Logged below once the logger exists; we keep going rather than drop the link.
+        }
+
         // 1) Single instance FIRST, before any expensive setup: if a resident instance
         //    exists, hand it our request and get out of the way.
         _residentMutex = new Mutex(initiallyOwned: true, IpcProtocol.MutexName, out var isFirstInstance);
+        var oneShotFallback = false;
         if (!isFirstInstance)
         {
-            ForwardToResident(args, started);
-            Shutdown();
-            return;
+            if (ForwardToResident(args, started) || args.Url is not { Length: > 0 })
+            {
+                Shutdown();
+                return;
+            }
+            // The resident instance exists but can't be reached (e.g. it runs elevated):
+            // show a one-shot picker ourselves instead of doing nothing at all.
+            _residentMutex.Dispose();
+            _residentMutex = null;
+            oneShotFallback = true;
         }
 
         // 2) Services, settings, theme.
         _serviceProvider = BuildServices();
         _logger = _serviceProvider.GetRequiredService<ILogger<App>>();
         DispatcherUnhandledException += OnDispatcherUnhandledException;
+        if (deElevationFailure != null)
+            _logger.LogWarning("Running elevated: could not relaunch unelevated ({Reason}); links from normal apps may not reach this instance", deElevationFailure);
+        if (oneShotFallback)
+            _logger.LogWarning("Resident instance unreachable (elevated or hung?) — showing a one-shot picker");
 
         var settingsService = _serviceProvider.GetRequiredService<ISettingsService>();
         var settings = await settingsService.LoadAsync();
         _serviceProvider.GetRequiredService<ThemeService>().Apply(settings.Theme, Resources);
 
-        if (!settings.KeepRunningInTray)
+        if (oneShotFallback || !settings.KeepRunningInTray)
         {
             // Legacy one-shot mode: nobody else may forward to us.
-            _residentMutex.Dispose();
+            _residentMutex?.Dispose();
             _residentMutex = null;
             await RunLegacyAsync(args, settings);
             return;
@@ -153,7 +181,8 @@ public partial class App : Application
     }
 
     // Second instance (main exe started directly while resident): forward and exit.
-    private static void ForwardToResident(StartupArgs args, long started)
+    // Returns false when the resident instance could not be reached.
+    private static bool ForwardToResident(StartupArgs args, long started)
     {
         // We were started by the user, so we may pass the foreground right on.
         NativeMethods.AllowSetForegroundWindow(NativeMethods.AsfwAny);
@@ -161,8 +190,8 @@ public partial class App : Application
             ? new IpcMessage(IpcProtocol.CommandOpen, started, args.Url)
             : new IpcMessage(IpcProtocol.CommandSettings, started, string.Empty);
         // A bare "--tray" start (e.g. Run key while already running) has nothing to forward.
-        if (args.Tray && args.Url is null) return;
-        IpcProtocol.TrySend(message, ForwardTimeoutMs);
+        if (args.Tray && args.Url is null) return true;
+        return IpcProtocol.TrySend(message, ForwardTimeoutMs);
     }
 
     // ── Resident (tray) mode ─────────────────────────────────────────────────

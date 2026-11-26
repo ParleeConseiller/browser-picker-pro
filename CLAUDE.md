@@ -4,8 +4,8 @@
   Author: Jose-Jorge HERNANDEZ
   Company: Parlee Conseiller, Inc.
   Date: 2026-06-12
-  Last edit date: 2026-11-25
-  Version: 2.0.0
+  Last edit date: 2026-11-26
+  Version: 2.1.0
 -->
 # CLAUDE.md — Browser Picker Pro
 
@@ -177,6 +177,9 @@ The launcher must call `AllowSetForegroundWindow(ASFW_ANY)` before writing to th
 
 ### 15. Per-link work must be idempotent and cheap
 `ApplySettings` runs on every link: it only touches the window style / `ItemsPanel` / background when they **changed** (replacing `ItemsPanel` or `Clear()`+`Add()` on `FilteredBrowsers` regenerates every card).
+
+### 16. The resident app must never run elevated — and testing from an admin shell hides it
+Claude's shell on this machine is elevated. A resident app started from it runs at High integrity, so every *real* click (Medium integrity) can't open the pipe and gets silently dropped, while `Start-Process <url>` from the same admin shell works perfectly. `App.OnStartup` therefore relaunches an elevated start through Explorer (`Helpers/Elevation.cs`; the `CreateProcess` parent-process trick fails with error 740 here). **Test links as a normal user**: `explorer.exe "https://…"` or `explorer.exe file.html` from the admin shell runs the handler through the Medium-integrity desktop Explorer. Check the resident's integrity level if links "do nothing".
 
 ---
 
